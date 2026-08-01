@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>璀璨宝石：对决 · Splendor Duel</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- 顶栏 -->
+  <header id="topbar">
+    <div class="brand">
+      <span class="logo">◆</span>
+      <span class="title">璀璨宝石：对决</span>
+      <span class="subtitle">Splendor Duel</span>
+    </div>
+    <div class="top-actions">
+      <button id="btnLog" class="btn ghost btn-log-toggle" title="战报">战报</button>
+      <button id="btnNew" class="btn ghost">新对局</button>
+      <button id="btnHelp" class="btn ghost">规则</button>
+    </div>
+  </header>
+
+  <!-- 主舞台：左侧对手区 + 中央卡牌宝石盘 + 右侧玩家区 -->
+  <div id="stage">
+    <section id="opponent" class="player-area"></section>
+
+    <main id="center">
+      <div id="pyramidWrap">
+        <div class="pyramid-row" id="row3"></div>
+        <div class="pyramid-row" id="row2"></div>
+        <div class="pyramid-row" id="row1"></div>
+        <div id="royalRow" class="royal-row"></div>
+      </div>
+
+      <div id="boardWrap">
+        <div class="board-label">宝石盘 · 5×5</div>
+        <div id="board"></div>
+        <div id="supplies">
+          <div class="supply" id="supplyPrivilege">
+            <span class="supply-label">卷轴</span>
+            <div class="supply-tokens" id="privilegePool"></div>
+          </div>
+          <div class="supply" id="supplyBag">
+            <span class="supply-label">布袋 <span id="bagCount"></span></span>
+            <div class="supply-tokens" id="bagVisual"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section id="player" class="player-area"></section>
+  </div>
+
+  <!-- 行动栏 -->
+  <footer id="actionbar">
+    <div id="message" class="message"></div>
+    <div id="actions" class="actions"></div>
+  </footer>
+
+  <!-- 日志 -->
+  <aside id="logPanel">
+    <div class="log-head">战报</div>
+    <div id="log"></div>
+  </aside>
+
+  <!-- 开局揭幕层 -->
+  <div id="curtain" class="curtain">
+    <div class="curtain-l"></div>
+    <div class="curtain-r"></div>
+    <div class="curtain-content">
+      <div class="curtain-logo">◆</div>
+      <div class="curtain-title">璀璨宝石</div>
+      <div class="curtain-sub">DUEL · 对决</div>
+    </div>
+  </div>
+
+  <!-- 模态层 -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-card" id="modalCard"></div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

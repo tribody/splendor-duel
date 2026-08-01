@@ -1,13 +1,25 @@
-node_modules/
+# 系统/编辑器
 .DS_Store
-dist/
-build/
-.env
-.env.local
-*.log
+Thumbs.db
 .vscode/
 .idea/
-__pycache__/
-*.pyc
-.next/
-coverage/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.log
+.cache/
+
+# Node (本项目不依赖，仅防御)
+node_modules/
+dist/
+build/
+
+# 本地调试脚本
+check.ps1
+deploy-simple.ps1
+deploy-fast.ps1
+deploy.ps1
+deploy.bat

@@ -1,0 +1,1200 @@
+/* ===== 璀璨宝石：对决 — 样式 ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root{
+  --bg:#0a0c10;
+  --felt:#133a2e;
+  --felt2:#0a2a20;
+  --gold:#e7b54a;
+  --gold2:#b8862b;
+  --gold-glow:rgba(231,181,74,.35);
+  --ink:#1b1f27;
+  --paper:#f5efe1;
+  --line:rgba(255,255,255,.1);
+  --line2:rgba(255,255,255,.06);
+  --c-white:#dfe6ef;
+  --c-blue:#2f6df0;
+  --c-green:#1faa59;
+  --c-red:#e23b3b;
+  --c-black:#20232c;
+  --c-pearl:#f3c9d4;
+  --c-gold:#f2c84b;
+  --shadow:0 8px 24px rgba(0,0,0,.5);
+  --shadow-sm:0 3px 10px rgba(0,0,0,.35);
+  --shadow-lg:0 16px 48px rgba(0,0,0,.6);
+  --radius:12px;
+  --ease:cubic-bezier(.34,1.56,.64,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --font-display:'Cinzel','Noto Serif SC',serif;
+  --font-body:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  --font-serif:'Noto Serif SC',serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--font-body);
+  color:#eef1f5;
+  background:
+    radial-gradient(ellipse 1200px 700px at 50% -10%, #1a2e3e 0%, transparent 55%),
+    radial-gradient(ellipse 800px 600px at 10% 90%, rgba(31,170,89,.06), transparent 60%),
+    radial-gradient(ellipse 800px 600px at 90% 70%, rgba(47,109,240,.06), transparent 60%),
+    var(--bg);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* 全局微噪点纹理 */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#app{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns: 1fr 240px;
+  grid-template-rows: 56px 1fr auto;
+  grid-template-areas:
+    "top top"
+    "stage log"
+    "bar log";
+  height:100vh;
+  gap:0;
+}
+#opponent{ grid-area:auto; }
+#player{ grid-area:auto; }
+
+/* 主舞台：对手(左) + 中央卡牌宝石盘(中) + 玩家(右) 三列对峙 */
+#stage{
+  grid-area:stage;
+  display:grid;
+  grid-template-columns: 240px 1fr 240px;
+  gap:0;
+  overflow:hidden;
+}
+#stage > #opponent,
+#stage > #player{
+  overflow-y:auto;
+}
+
+/* ---- 顶栏 ---- */
+#topbar{
+  grid-area:top;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  background:linear-gradient(180deg,rgba(22,27,34,.95),rgba(16,20,26,.95));
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(10px);
+}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand .logo{
+  color:var(--gold);font-size:22px;
+  text-shadow:0 0 16px var(--gold-glow);
+  animation:logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse{0%,100%{text-shadow:0 0 16px var(--gold-glow)}50%{text-shadow:0 0 28px var(--gold-glow),0 0 40px rgba(231,181,74,.15)}}
+.brand .title{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:2px}
+.brand .subtitle{font-family:var(--font-display);font-size:11px;opacity:.5;letter-spacing:1px}
+.top-actions{display:flex;gap:8px}
+/* 日志切换按钮：仅移动端显示 */
+.btn-log-toggle{display:none}
+
+/* ---- 按钮 ---- */
+.btn{
+  cursor:pointer;border:1px solid var(--line);border-radius:10px;
+  padding:8px 16px;background:rgba(28,34,48,.8);color:#eef1f5;font-size:13px;
+  font-family:var(--font-body);font-weight:500;
+  transition:all .2s var(--ease-out);
+  position:relative;overflow:hidden;
+}
+.btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.06) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .5s;
+}
+.btn:hover{background:rgba(38,45,61,.9);border-color:rgba(58,66,83,.6);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.btn:hover::before{transform:translateX(100%)}
+.btn:active{transform:translateY(0)}
+.btn.primary{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1206;border-color:#000;
+  font-weight:700;box-shadow:0 4px 16px var(--gold-glow);
+}
+.btn.primary:hover{filter:brightness(1.1);box-shadow:0 6px 22px var(--gold-glow)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn:disabled::before{display:none}
+.btn.danger{background:rgba(58,29,34,.8);border-color:rgba(90,39,48,.6);color:#ffb4b4}
+.btn.sm{padding:5px 12px;font-size:12px;border-radius:8px}
+
+/* ---- 中央舞台 ---- */
+#center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:14px;
+  padding:14px 16px;
+  overflow:auto;
+  background:
+    radial-gradient(900px 500px at 30% 20%, rgba(31,170,89,.08), transparent 60%),
+    radial-gradient(700px 500px at 80% 80%, rgba(47,109,240,.08), transparent 60%),
+    linear-gradient(180deg,var(--felt),var(--felt2));
+  border-left:1px solid var(--line2);
+  border-right:1px solid var(--line2);
+}
+#pyramidWrap{
+  display:flex;flex-direction:column;gap:10px;align-items:center;
+  padding:6px 4px;
+  width:100%;
+}
+.pyramid-row{display:flex;gap:12px;justify-content:center;width:100%}
+#row3 .card-slot,#row2 .card-slot,#row1 .card-slot{width:112px;height:156px}
+.royal-row{display:flex;gap:12px;justify-content:center;margin-top:10px;min-height:156px}
+.royal-row .card-slot{width:112px;height:156px}
+
+/* ===== 卡牌 ===== */
+.card-slot{
+  position:relative;
+  background:linear-gradient(170deg,#fbf6e9,#ece1c6);
+  color:var(--ink);
+  border:1px solid #b9a877;
+  border-radius:10px;
+  box-shadow:var(--shadow-sm);
+  cursor:pointer;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease-out),filter .3s;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  animation:cardDeal .45s var(--ease-out) backwards;
+  transform-origin:center bottom;
+}
+@keyframes cardDeal{from{opacity:0;transform:translateY(-24px) scale(.88) rotate(-3deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+.card-slot.empty{background:rgba(0,0,0,.15);border:1px dashed rgba(255,255,255,.12);box-shadow:none;cursor:default;animation:none}
+.card-slot:hover{
+  transform:translateY(-14px) scale(1.18);
+  box-shadow:0 24px 48px rgba(0,0,0,.7),0 0 0 2px rgba(231,181,74,.6),0 0 36px rgba(231,181,74,.25);
+  z-index:20;
+  filter:brightness(1.08);
+}
+.card-slot.selectable:hover{
+  transform:translateY(-16px) scale(1.20);
+}
+.card-slot.selected{
+  outline:3px solid var(--gold);outline-offset:3px;
+  box-shadow:0 0 28px var(--gold-glow),0 12px 28px rgba(0,0,0,.55);
+  transform:translateY(-8px) scale(1.06);
+}
+.card-slot.affordable{
+  box-shadow:0 0 0 2px #6fe3a3,var(--shadow-sm);
+  animation:affordGlow 2s ease-in-out infinite;
+}
+@keyframes affordGlow{0%,100%{box-shadow:0 0 0 2px #6fe3a3,var(--shadow-sm)}50%{box-shadow:0 0 0 2px #6fe3a3,0 0 16px rgba(111,227,163,.4),var(--shadow-sm)}}
+
+/* 顶部色带 */
+.card-slot .card-head{
+  position:relative;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid rgba(0,0,0,.15);
+  flex-shrink:0;
+}
+.card-slot .card-points{
+  position:absolute;top:4px;left:6px;
+  font-family:var(--font-display);font-weight:900;font-size:18px;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.7),0 0 6px rgba(0,0,0,.3);
+  line-height:1;
+}
+.card-slot .card-crowns{
+  position:absolute;top:4px;right:6px;
+  font-size:13px;line-height:1;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));
+}
+.card-slot .card-bonus-gems{
+  display:flex;gap:3px;align-items:center;justify-content:center;
+  margin-top:18px;
+}
+.card-gem-icon{
+  width:17px;height:17px;border-radius:50%;
+  box-shadow:inset 0 -2px 4px rgba(0,0,0,.3),inset 0 2px 3px rgba(255,255,255,.4),0 1px 2px rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.3);
+}
+.card-gem-icon.white{background:radial-gradient(circle at 35% 30%,#fff,#c3cedb 60%,#9aa7b5)}
+.card-gem-icon.blue{background:radial-gradient(circle at 35% 30%,#7fb0ff,#2f6df0 60%,#1b46b0)}
+.card-gem-icon.green{background:radial-gradient(circle at 35% 30%,#7ef0ad,#1faa59 60%,#0f7a3e)}
+.card-gem-icon.red{background:radial-gradient(circle at 35% 30%,#ff9a9a,#e23b3b 60%,#9c1d1d)}
+.card-gem-icon.black{background:radial-gradient(circle at 35% 30%,#5a6070,#20232c 60%,#0a0c10)}
+.card-gem-icon.pearl{background:radial-gradient(circle at 35% 30%,#fff6f9,#f3c9d4 55%,#cf8aa0)}
+
+/* 能力横幅 */
+.card-slot .card-ability-banner{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  background:linear-gradient(180deg,#3a2c10,#2a1f08);
+  color:#f5d77a;font-size:11px;font-weight:700;
+  padding:3px 5px;border-bottom:1px solid rgba(0,0,0,.2);
+  flex-shrink:0;letter-spacing:.5px;
+}
+.card-slot .card-ability-banner .abil-icon{font-size:13px}
+
+/* 中央装饰区 */
+.card-slot .card-art{
+  flex:1;position:relative;min-height:18px;
+  border-top:1px solid rgba(0,0,0,.1);
+  border-bottom:1px solid rgba(0,0,0,.1);
+}
+.card-slot .card-art::before{
+  content:"";position:absolute;inset:0;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.28);
+  pointer-events:none;z-index:1;
+}
+.card-slot .card-art::after{
+  content:"";position:absolute;inset:3px 6px;
+  background:
+    radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.22),transparent 55%),
+    linear-gradient(180deg,transparent 50%,rgba(0,0,0,.22) 100%);
+  border-radius:4px;pointer-events:none;z-index:2;
+}
+
+/* 底部费用 */
+.card-slot .card-cost{
+  display:flex;gap:3px;align-items:center;flex-wrap:wrap;
+  padding:4px 5px;background:rgba(0,0,0,.06);
+  border-top:1px solid rgba(0,0,0,.1);
+  min-height:22px;flex-shrink:0;
+}
+.cost-gem{
+  width:13px;height:13px;border-radius:50%;
+  box-shadow:inset 0 -1px 2px rgba(0,0,0,.3),inset 0 1px 2px rgba(255,255,255,.3);
+  border:1px solid rgba(0,0,0,.2);
+}
+.cost-gem.white{background:radial-gradient(circle at 35% 30%,#fff,#c3cedb 60%,#9aa7b5)}
+.cost-gem.blue{background:radial-gradient(circle at 35% 30%,#7fb0ff,#2f6df0 60%,#1b46b0)}
+.cost-gem.green{background:radial-gradient(circle at 35% 30%,#7ef0ad,#1faa59 60%,#0f7a3e)}
+.cost-gem.red{background:radial-gradient(circle at 35% 30%,#ff9a9a,#e23b3b 60%,#9c1d1d)}
+.cost-gem.black{background:radial-gradient(circle at 35% 30%,#5a6070,#20232c 60%,#0a0c10)}
+.cost-gem.pearl{background:radial-gradient(circle at 35% 30%,#fff6f9,#f3c9d4 55%,#cf8aa0)}
+.cost-gem.gold{background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c84b 55%,#b8862b)}
+
+/* 牌堆背面 */
+.card-slot .deck-back{
+  width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:10px;position:relative;
+}
+.card-slot .deck-back::after{
+  content:'';position:absolute;inset:0;border-radius:10px;
+  background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 50%);
+  pointer-events:none;
+}
+.card-slot.lvl1 .deck-back{background:repeating-linear-gradient(135deg,#1a5e3a,#1a5e3a 6px,#14502f 6px,#14502f 12px)}
+.card-slot.lvl2 .deck-back{background:repeating-linear-gradient(135deg,#8a6e1a,#8a6e1a 6px,#705816 6px,#705816 12px)}
+.card-slot.lvl3 .deck-back{background:repeating-linear-gradient(135deg,#1a3a6e,#1a3a6e 6px,#142f56 6px,#142f56 12px)}
+.deck-back .deck-level{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.35);border:2px solid rgba(255,215,100,.5);
+  display:flex;align-items:center;justify-content:center;
+  color:#f5d77a;font-family:var(--font-display);font-weight:800;font-size:20px;
+  margin-bottom:3px;text-shadow:0 0 8px rgba(255,215,100,.3);
+}
+.deck-back .deck-count{color:rgba(255,215,100,.75);font-size:12px;font-weight:600}
+
+/* 王室卡 — 与金字塔卡同样式（112×156），紫色调 + 人物背景 + 王冠 */
+.card-slot.royal-card{
+  background:linear-gradient(170deg,#3a2c5a,#211836);
+  border:1px solid #8a7aba;color:#e9e1ff;
+  box-shadow:var(--shadow-sm),0 0 12px rgba(138,122,186,.2);
+}
+.card-slot.royal-card::before{
+  content:'';position:absolute;inset:0;border-radius:10px;
+  background:radial-gradient(circle at 50% 30%,rgba(255,215,100,.10),transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.card-slot.royal-card > *{position:relative;z-index:1}
+.card-slot.royal-card:hover{
+  transform:translateY(-14px) scale(1.10);
+  box-shadow:0 24px 48px rgba(0,0,0,.7),0 0 0 2px rgba(180,140,255,.7),0 0 36px rgba(180,140,255,.3);
+  z-index:20;
+}
+.card-slot.royal-card .royal-head{border-bottom-color:rgba(0,0,0,.25)}
+.card-slot.royal-card .royal-gem{margin-top:14px}
+.card-slot.royal-card .royal-crest{
+  font-size:22px;color:#ffd56a;line-height:1;
+  text-shadow:0 0 10px rgba(255,213,106,.5),0 2px 4px rgba(0,0,0,.6);
+  animation:crestGlow 2.5s ease-in-out infinite;
+}
+@keyframes crestGlow{0%,100%{text-shadow:0 0 10px rgba(255,213,106,.5),0 2px 4px rgba(0,0,0,.6)}50%{text-shadow:0 0 18px rgba(255,213,106,.8),0 2px 4px rgba(0,0,0,.6)}}
+.card-slot.royal-card .royal-banner{
+  background:linear-gradient(180deg,#4a3a6a,#2a1f4a);
+  color:#e9d7ff;border-bottom-color:rgba(0,0,0,.3);
+}
+.card-slot.royal-card .royal-cost{
+  background:rgba(0,0,0,.15);justify-content:center;
+}
+.card-slot.royal-card .royal-tag{
+  font-size:9px;color:#c9b3ff;letter-spacing:.5px;text-align:center;
+  text-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+.card-slot.royal-card.taken{opacity:.18;filter:grayscale(.9);pointer-events:none}
+.card-slot.royal-card .card-points{color:#ffd56a;text-shadow:0 1px 3px rgba(0,0,0,.8),0 0 6px rgba(255,213,106,.4)}
+
+/* ---- 棋盘 ---- */
+#boardWrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.board-label{
+  font-family:var(--font-display);font-size:12px;opacity:.5;letter-spacing:3px;
+  text-transform:uppercase;
+}
+#board{
+  display:grid;
+  grid-template-columns:repeat(5,62px);
+  grid-template-rows:repeat(5,62px);
+  gap:4px;padding:10px;
+  background:rgba(0,0,0,.25);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:inset 0 0 40px rgba(0,0,0,.5),0 4px 20px rgba(0,0,0,.3);
+}
+.cell{
+  width:62px;height:62px;border-radius:8px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;transition:background .2s;
+}
+.cell.selectable{cursor:pointer}
+.cell.selectable:hover{background:rgba(231,181,74,.08)}
+.cell.selected{background:rgba(231,181,74,.12)}
+.cell.selected .token{transform:scale(1.1);box-shadow:0 0 0 3px var(--gold),0 0 16px var(--gold-glow)}
+.cell.hl{background:rgba(111,227,163,.18)}
+.token{
+  width:50px;height:50px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  box-shadow:inset 0 -4px 8px rgba(0,0,0,.35),inset 0 4px 8px rgba(255,255,255,.25),0 3px 6px rgba(0,0,0,.5);
+  transition:transform .2s var(--ease);
+}
+.cell.selectable:hover .token{transform:scale(1.06)}
+.token::after{
+  content:"";position:absolute;top:6px;left:9px;width:14px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.55);filter:blur(1px);
+}
+.token.white{background:radial-gradient(circle at 35% 30%,#ffffff,#c3cedb 60%,#9aa7b5)}
+.token.blue{background:radial-gradient(circle at 35% 30%,#7fb0ff,#2f6df0 60%,#1b46b0)}
+.token.green{background:radial-gradient(circle at 35% 30%,#7ef0ad,#1faa59 60%,#0f7a3e)}
+.token.red{background:radial-gradient(circle at 35% 30%,#ff9a9a,#e23b3b 60%,#9c1d1d)}
+.token.black{background:radial-gradient(circle at 35% 30%,#5a6070,#20232c 60%,#0a0c10)}
+.token.pearl{background:radial-gradient(circle at 35% 30%,#fff6f9,#f3c9d4 55%,#cf8aa0)}
+.token.gold{background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c84b 55%,#b8862b)}
+.token .tk-count{position:absolute;bottom:-4px;right:-4px;background:#1b1f27;color:#fff;font-size:10px;border-radius:8px;padding:0 4px;border:1px solid var(--line)}
+.token.mini{width:20px;height:20px}
+.token.mini::after{width:6px;height:4px;top:3px;left:4px}
+.token.tiny{width:15px;height:15px}
+.token.tiny::after{width:4px;height:3px;top:2px;left:3px}
+
+/* 补给 */
+#supplies{display:flex;gap:18px;align-items:flex-start}
+.supply{display:flex;flex-direction:column;align-items:center;gap:4px}
+.supply-label{font-size:11px;opacity:.6;letter-spacing:1px}
+.supply-tokens{display:flex;gap:3px;align-items:center;min-height:28px}
+
+/* ---- 玩家区（侧栏纵向布局） ---- */
+.player-area{
+  display:flex;
+  flex-direction:column;
+  gap:10px;padding:12px 12px;
+  background:linear-gradient(180deg,rgba(18,22,29,.9),rgba(13,17,22,.9));
+  overflow:visible;
+  transition:background .3s,box-shadow .3s;
+}
+.player-area.active{
+  box-shadow:inset 0 0 0 1px rgba(231,181,74,.4),inset 0 0 20px rgba(231,181,74,.04);
+  background:linear-gradient(180deg,rgba(26,32,48,.95),rgba(18,22,29,.95));
+}
+.player-area .p-info{display:flex;flex-direction:column;gap:5px;font-size:11px}
+.p-info .p-name{
+  font-family:var(--font-serif);font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:6px;
+  padding-bottom:4px;border-bottom:1px solid var(--line2);
+}
+.p-info .p-stats{display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;opacity:.95}
+.p-stat{display:flex;justify-content:space-between;gap:6px;font-size:11px}
+.p-stat b{color:var(--gold);font-family:var(--font-display)}
+.win-prog{display:flex;flex-direction:column;gap:3px;margin-top:2px}
+.prog{font-size:9px}
+.prog .bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-top:2px}
+.prog .bar > i{display:block;height:100%;border-radius:3px;transition:width .5s var(--ease-out)}
+.prog:nth-child(1) .bar > i{background:linear-gradient(90deg,var(--gold),#fff0b8)}
+.prog:nth-child(2) .bar > i{background:linear-gradient(90deg,#e23b3b,#ff9a9a)}
+.prog:nth-child(3) .bar > i{background:linear-gradient(90deg,#b8862b,var(--gold))}
+
+/* 玩家区段标题（手持宝石 / 持有卡牌 / 预留卡牌） */
+.p-section-label{
+  font-size:9px;letter-spacing:1px;opacity:.5;text-transform:uppercase;
+  margin-bottom:2px;
+}
+
+.p-tokens{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.token-pile{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;transition:transform .2s}
+.token-pile:hover{transform:scale(1.08)}
+.token-pile .stack{position:relative;width:24px;height:26px}
+.token-pile .stack .token{position:absolute;left:2px;width:20px;height:20px}
+.token-pile.selectable{cursor:pointer}
+.token-pile.selectable:hover{transform:scale(1.15)}
+
+.p-cards{display:flex;flex-direction:column;gap:5px;overflow:visible}
+.p-cards .card-line{display:flex;gap:4px;flex-wrap:wrap}
+.mini-card{
+  width:40px;height:52px;border-radius:6px;
+  background:linear-gradient(170deg,#fbf6e9,#ece1c6);
+  border:1px solid #b9a877;color:var(--ink);
+  display:flex;flex-direction:column;
+  position:relative;font-size:10px;box-shadow:0 2px 6px rgba(0,0,0,.4);
+  overflow:visible;transition:transform .25s var(--ease),box-shadow .25s,z-index 0s;
+  cursor:zoom-in;
+}
+.mini-card .mc-band{border-radius:6px 6px 0 0;overflow:hidden}
+.mini-card .mc-body{border-radius:0 0 6px 6px;overflow:hidden}
+/* hover 放大预览：放大到接近原卡尺寸，提升 z-index，显示完整内容 */
+.mini-card:hover{
+  transform:translateY(-10px) scale(2.4);
+  box-shadow:0 20px 40px rgba(0,0,0,.75),0 0 0 2px rgba(231,181,74,.7),0 0 28px rgba(231,181,74,.3);
+  z-index:50;
+}
+.mini-card.royal-mini:hover{
+  box-shadow:0 20px 40px rgba(0,0,0,.75),0 0 0 2px rgba(180,140,255,.7),0 0 28px rgba(180,140,255,.3);
+}
+/* 放大时让内部字号更清晰，并显示费用等细节 */
+.mini-card:hover .mc-points{font-size:20px}
+.mini-card:hover .mc-crown{font-size:15px}
+.mini-card:hover .mc-x2{font-size:12px}
+.mini-card:hover .mc-abil{font-size:14px;padding:2px 5px}
+.mini-card:hover .mc-band{height:22px}
+.mini-card:hover .mc-tip{display:flex}
+/* 放大时显示的详情提示（费用/能力说明） */
+.mini-card .mc-tip{
+  display:none;position:absolute;left:50%;bottom:calc(100% + 8px);
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(26,32,48,.97),rgba(16,20,26,.97));
+  border:1px solid rgba(231,181,74,.4);border-radius:8px;
+  padding:6px 10px;font-size:11px;color:#eef1f5;white-space:nowrap;
+  box-shadow:0 8px 20px rgba(0,0,0,.6);
+  pointer-events:none;z-index:60;
+  line-height:1.5;
+}
+.mini-card .mc-tip .tip-cost{color:#f5d77a;font-weight:600}
+.mini-card .mc-tip .tip-abil{color:#6fe3a3;font-weight:600;margin-top:2px}
+.mini-card .mc-band{height:14px;flex-shrink:0;border-bottom:1px solid rgba(0,0,0,.15)}
+.mini-card .mc-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;gap:1px;background-color:#fbf6e9;
+}
+.mini-card .mc-body::before{content:"";position:absolute;inset:0;box-shadow:inset 0 0 8px rgba(0,0,0,.2);pointer-events:none}
+.mini-card .mc-points{font-family:var(--font-display);font-weight:800;color:#7a1d1d;font-size:11px;line-height:1}
+.mini-card .mc-points.mc-dot{color:#999;font-size:14px}
+.mini-card .mc-crown{font-size:8px;line-height:1}
+.mini-card .mc-x2{font-size:7px;color:#555;font-weight:700}
+.mini-card .mc-abil{font-size:9px;color:#3a2c10;background:#f5d77a;border-radius:2px;padding:0 2px;line-height:1}
+.mini-card.royal-mini{background:linear-gradient(160deg,#3a2c5a,#211836);border-color:#6a5a9a;color:#e9e1ff}
+.mini-card.royal-mini .mc-band{background:linear-gradient(180deg,#6a5a9a,#4a3a7a)}
+.mini-card.royal-mini .mc-points{color:#ffd56a}
+.mini-card .mc-back{background:repeating-linear-gradient(135deg,#2a3a5a,#2a3a5a 4px,#22304d 4px,#22304d 8px)}
+.mini-card.affordable{box-shadow:0 0 0 2px #6fe3a3,0 2px 6px rgba(0,0,0,.4);animation:affordGlow 2s ease-in-out infinite}
+.reserved-card{cursor:pointer}
+.reserved-card:hover{outline:2px solid var(--gold)}
+.priv-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#3a2c10;border:1px solid var(--gold);color:#f5d77a;
+  border-radius:6px;padding:2px 6px;font-size:11px;
+}
+.priv-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:dotPulse 1.5s infinite}
+@keyframes dotPulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ---- 行动栏 ---- */
+#actionbar{
+  grid-area:bar;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 18px;
+  background:linear-gradient(180deg,rgba(16,20,26,.95),rgba(10,13,18,.95));
+  border-top:1px solid var(--line);
+  backdrop-filter:blur(8px);
+}
+.message{font-size:13px;opacity:.9;flex:1;transition:opacity .3s}
+.message b{color:var(--gold)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ---- 日志 ---- */
+#logPanel{
+  grid-area:log;
+  background:rgba(8,10,14,.8);
+  border-left:1px solid var(--line);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.log-head{
+  padding:10px 14px;font-family:var(--font-display);font-size:12px;font-weight:700;
+  letter-spacing:3px;opacity:.6;border-bottom:1px solid var(--line);
+  text-transform:uppercase;
+}
+#log{padding:10px 14px;font-size:12px;line-height:1.6;overflow:auto;flex:1}
+#log .l{
+  padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.04);
+  animation:logFade .3s ease-out;
+}
+@keyframes logFade{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+#log .l.me{color:#9fd8ff}
+#log .l.foe{color:#ffb4b4}
+#log .l.sys{color:#f5d77a;opacity:.8}
+
+/* ---- 模态 ---- */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);
+  display:flex;align-items:center;justify-content:center;z-index:50;
+  backdrop-filter:blur(6px);
+  animation:modalIn .3s var(--ease-out);
+}
+@keyframes modalIn{from{opacity:0}to{opacity:1}}
+.modal.hidden{display:none}
+.modal-card{
+  background:linear-gradient(160deg,rgba(26,32,48,.98),rgba(18,22,29,.98));
+  border:1px solid var(--line);border-radius:16px;
+  padding:28px 32px;max-width:520px;width:90%;
+  box-shadow:var(--shadow-lg);
+  animation:modalCardIn .4s var(--ease) backwards;
+}
+@keyframes modalCardIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-card h2{margin:0 0 10px;color:var(--gold);font-family:var(--font-display);font-size:22px;letter-spacing:1px}
+.modal-card p{font-size:13px;line-height:1.7;opacity:.9}
+.modal-card .opts{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.modal-card .opts .btn{text-align:left;padding:14px 16px}
+.modal-card .win-icons{font-size:56px;text-align:center;margin:10px 0;animation:winBounce 1s var(--ease) infinite}
+@keyframes winBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.modal-card .close{margin-top:18px;width:100%}
+.choice-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* tooltip-ish */
+.hint{font-size:11px;opacity:.6;margin-top:6px}
+.kbd{background:#262d3d;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:11px}
+
+/* 滚动条 */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(42,51,68,.7);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(58,66,83,.8)}
+::-webkit-scrollbar-track{background:transparent}
+
+@media (max-width:1100px){
+  /* 平板：玩家侧栏缩窄 */
+  #stage{grid-template-columns:200px 1fr 200px}
+  #app{grid-template-columns:1fr 200px}
+  #board{grid-template-columns:repeat(5,54px);grid-template-rows:repeat(5,54px)}
+  .cell{width:54px;height:54px}
+  .token{width:44px;height:44px}
+  #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{width:92px;height:128px}
+  .p-info .p-name{font-size:14px}
+}
+
+/* ============================================================
+   响应式 — 平板 (768-1100px) 进一步缩窄
+   ============================================================ */
+@media (max-width:900px){
+  #stage{grid-template-columns:180px 1fr 180px}
+  #app{grid-template-columns:1fr 170px}
+  #board{grid-template-columns:repeat(5,48px);grid-template-rows:repeat(5,48px)}
+  .cell{width:48px;height:48px}
+  .token{width:40px;height:40px}
+  #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{width:80px;height:112px}
+  .pyramid-row{gap:8px}
+  .royal-row{gap:8px}
+  .p-info .p-name{font-size:13px}
+  .p-info .p-stats{font-size:10px}
+  .mini-card{width:34px;height:44px}
+  .token-pile .stack{width:22px;height:24px}
+  .token-pile .stack .token{width:20px;height:20px}
+}
+
+/* ============================================================
+   响应式 — 手机 (<768px) 单列堆叠 + 日志抽屉
+   ============================================================ */
+@media (max-width:768px){
+  /* 日志切换按钮显示 */
+  .btn-log-toggle{display:inline-flex}
+  /* 日志面板转为右侧抽屉，默认隐藏 */
+  #logPanel{
+    position:fixed;top:56px;right:0;bottom:0;width:280px;
+    grid-area:auto;z-index:100;
+    transform:translateX(100%);
+    transition:transform .3s var(--ease-out);
+    box-shadow:-8px 0 32px rgba(0,0,0,.6);
+  }
+  #logPanel.open{transform:translateX(0)}
+
+  /* #app 单列堆叠 */
+  #app{
+    grid-template-columns: 1fr;
+    grid-template-rows: 50px auto auto;
+    grid-template-areas:
+      "top"
+      "stage"
+      "bar";
+    height:auto;
+    min-height:100vh;
+  }
+  html,body{overflow:auto;height:auto}
+  body{overflow:auto}
+
+  /* 舞台改为单列：对手区 → 中央 → 玩家区 */
+  #stage{
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto auto;
+    overflow:visible;
+  }
+  #stage > #opponent,
+  #stage > #player{overflow:visible}
+
+  /* 顶栏紧凑 */
+  #topbar{padding:0 12px;height:50px}
+  .brand .title{font-size:15px;letter-spacing:1px}
+  .brand .subtitle{display:none}
+  .brand .logo{font-size:18px}
+  .btn{padding:6px 10px;font-size:12px}
+  .btn.sm{padding:5px 9px;font-size:11px}
+
+  /* 中央区：单列堆叠（金字塔在上，棋盘在下） */
+  #center{
+    padding:8px;gap:10px;
+    overflow:visible;
+    border-left:none;border-right:none;
+    border-top:1px solid var(--line2);
+    border-bottom:1px solid var(--line2);
+  }
+  #pyramidWrap{padding:6px 4px;gap:8px}
+  .pyramid-row{gap:6px}
+  .royal-row{gap:6px;min-height:auto}
+  /* 卡牌缩小：手机上一行5张需≤360px */
+  #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{
+    width:62px;height:86px;
+  }
+  .card-slot .card-head{height:26px}
+  .card-slot .card-points{font-size:13px;top:2px;left:4px}
+  .card-slot .card-crowns{font-size:10px;top:2px;right:4px}
+  .card-slot .card-bonus-gems{margin-top:10px;gap:2px}
+  .card-gem-icon{width:11px;height:11px}
+  .card-slot .card-ability-banner{font-size:8px;padding:2px 3px}
+  .card-slot .card-ability-banner .abil-icon{font-size:10px}
+  .card-slot .card-cost{padding:2px 3px;gap:2px}
+  .cost-gem{width:9px;height:9px}
+  .card-slot .royal-crest{font-size:14px}
+  .card-slot .royal-banner{font-size:8px}
+  .card-slot .royal-tag{font-size:7px}
+  .deck-back .deck-level{width:24px;height:24px;font-size:14px}
+  .deck-back .deck-count{font-size:10px}
+  /* 卡牌hover不要太大，避免溢出 */
+  .card-slot:hover{transform:translateY(-6px) scale(1.08);z-index:15}
+  .card-slot.selectable:hover{transform:translateY(-8px) scale(1.10)}
+
+  /* 棋盘缩小 */
+  #boardWrap{gap:6px}
+  .board-label{font-size:10px;letter-spacing:2px}
+  #board{
+    grid-template-columns:repeat(5,44px);
+    grid-template-rows:repeat(5,44px);
+    gap:3px;padding:6px;
+  }
+  .cell{width:44px;height:44px;border-radius:6px}
+  .token{width:36px;height:36px}
+  .token::after{width:10px;height:6px;top:4px;left:6px}
+
+  /* 补给区紧凑 */
+  #supplies{gap:12px}
+  .supply-label{font-size:10px}
+  .supply-tokens{min-height:22px}
+
+  /* 玩家区：手机端改为横向三列布局（信息/宝石/卡牌） */
+  .player-area{
+    gap:8px;padding:10px 12px;
+    overflow:visible;
+  }
+  .p-info .p-name{font-size:15px}
+  .p-info .p-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px}
+  .p-info .p-stat{font-size:11px}
+  .win-prog{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px}
+  .prog{font-size:9px}
+  .token-pile .stack{width:20px;height:22px}
+  .token-pile .stack .token{width:18px;height:18px}
+  .token-pile{font-size:10px}
+  .mini-card{width:32px;height:42px}
+  .mini-card:hover{transform:translateY(-4px) scale(2.0);z-index:50}
+
+  /* 行动栏紧凑 */
+  #actionbar{
+    padding:8px 10px;gap:8px;
+    flex-wrap:wrap;
+    position:sticky;bottom:0;
+  }
+  .message{font-size:12px;width:100%;order:1}
+  .actions{order:2;justify-content:flex-start;width:100%}
+  .actions .btn{flex:0 0 auto}
+}
+
+/* ============================================================
+   响应式 — 小手机 (<420px) 进一步压缩
+   ============================================================ */
+@media (max-width:420px){
+  #topbar{padding:0 8px}
+  .brand .title{font-size:13px}
+  .top-actions{gap:4px}
+  .btn{padding:5px 8px;font-size:11px}
+  #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{
+    width:54px;height:75px;
+  }
+  .card-slot .card-head{height:22px}
+  .card-slot .card-points{font-size:11px}
+  .card-slot .card-bonus-gems{margin-top:8px}
+  .card-gem-icon{width:9px;height:9px}
+  .card-slot .card-ability-banner{font-size:7px;padding:1px 2px}
+  #board{
+    grid-template-columns:repeat(5,38px);
+    grid-template-rows:repeat(5,38px);
+  }
+  .cell{width:38px;height:38px}
+  .token{width:30px;height:30px}
+  .token::after{width:8px;height:5px;top:3px;left:5px}
+  #logPanel{width:240px}
+  .mini-card{width:28px;height:38px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+/* ============================================================
+   视觉特效（FX）
+   ============================================================ */
+
+/* 开局揭幕层（黑幕左右拉开 + 标题闪耀） */
+.curtain{
+  position:fixed;inset:0;z-index:9998;
+  pointer-events:none;
+}
+.curtain-l,.curtain-r{
+  position:absolute;top:0;bottom:0;width:50%;
+  background:linear-gradient(180deg,#0a0c10,#000);
+  box-shadow:0 0 60px rgba(0,0,0,.9);
+  transition:transform 1.1s cubic-bezier(.7,0,.3,1);
+}
+.curtain-l{left:0;transform:translateX(0)}
+.curtain-r{right:0;transform:translateX(0)}
+.curtain.open .curtain-l{transform:translateX(-100%)}
+.curtain.open .curtain-r{transform:translateX(100%)}
+.curtain-content{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  transition:opacity .6s ease,transform .8s var(--ease-out);
+}
+.curtain.open .curtain-content{opacity:0;transform:translate(-50%,-50%) scale(1.3)}
+.curtain-logo{
+  font-size:60px;color:var(--gold);
+  text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(231,181,74,.3);
+  animation:curtainLogo 1.8s ease-in-out infinite;
+  margin-bottom:8px;
+}
+@keyframes curtainLogo{
+  0%,100%{text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(231,181,74,.3)}
+  50%{text-shadow:0 0 50px var(--gold-glow),0 0 100px rgba(231,181,74,.5),0 0 140px rgba(231,181,74,.2)}
+}
+.curtain-title{
+  font-family:var(--font-display);font-size:42px;font-weight:900;
+  letter-spacing:8px;color:#f5efe1;
+  text-shadow:0 2px 12px rgba(0,0,0,.8);
+}
+.curtain-sub{
+  font-family:var(--font-display);font-size:13px;letter-spacing:6px;
+  color:var(--gold);opacity:.7;margin-top:6px;
+}
+
+/* AI 思考中指示（三个跳动小点） */
+.ai-thinking{
+  display:inline-flex;align-items:center;gap:3px;
+  color:#9fb4d6;font-style:italic;
+}
+.ai-thinking .ai-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  box-shadow:0 0 6px var(--gold-glow);
+  animation:aiDot 1.2s ease-in-out infinite;
+}
+.ai-thinking .ai-dot:nth-child(2){animation-delay:.15s}
+.ai-thinking .ai-dot:nth-child(3){animation-delay:.30s}
+@keyframes aiDot{
+  0%,80%,100%{transform:translateY(0);opacity:.4}
+  40%{transform:translateY(-5px);opacity:1}
+}
+
+/* 粒子爆发（取宝石时） */
+.fx-particle{
+  position:fixed;
+  width:8px;height:8px;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  animation:fxParticle .7s var(--ease-out) forwards;
+}
+@keyframes fxParticle{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  60%{opacity:.9}
+  100%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.2);
+  }
+}
+
+/* 浮动数字（如 +1 钻石） */
+.fx-float{
+  position:fixed;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  font-family:var(--font-display);font-weight:800;font-size:18px;
+  text-shadow:0 2px 6px rgba(0,0,0,.6),0 0 12px currentColor;
+  animation:fxFloat 1.1s var(--ease-out) forwards;
+  white-space:nowrap;
+}
+@keyframes fxFloat{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+  20%{opacity:1;transform:translate(-50%,-80%) scale(1.1)}
+  100%{opacity:0;transform:translate(-50%,-180%) scale(.95)}
+}
+
+/* 卡牌购买/预留闪光（固定定位覆盖在卡牌位置） */
+.fx-cardflash{
+  pointer-events:none;z-index:9999;overflow:hidden;
+  border-radius:8px;
+}
+.fx-cardflash::before{
+  content:'';position:absolute;inset:-50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(255,215,100,.9) 25%,transparent 50%,rgba(255,255,255,.7) 75%,transparent 100%);
+  animation:fxCardFlash .7s ease-out forwards;
+}
+.fx-cardflash.purchase::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(255,215,100,.5),transparent 70%);
+  animation:fxCardPulse .5s ease-out forwards;
+}
+@keyframes fxCardFlash{from{transform:rotate(0) scale(1.5);opacity:0}to{transform:rotate(360deg) scale(1.5);opacity:0}}
+@keyframes fxCardPulse{0%{opacity:.8}100%{opacity:0}}
+
+/* 屏幕脉冲（重要事件） */
+.fx-screen-pulse{
+  position:fixed;inset:0;pointer-events:none;z-index:9998;
+  animation:fxScreenPulse .6s ease-out forwards;
+}
+@keyframes fxScreenPulse{
+  0%{opacity:0}
+  30%{opacity:1}
+  100%{opacity:0}
+}
+
+/* 宝石飞行动画（从棋盘飞到玩家token堆，带弧线轨迹） */
+.fx-fly-token{
+  position:fixed;width:30px;height:30px;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  animation:fxFlyToken .7s var(--ease-out) forwards;
+}
+@keyframes fxFlyToken{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}
+  25%{opacity:1;transform:translate(calc(-50% + var(--dx,0px)*.3), calc(-50% + var(--dy,0px)*.3 - 30px)) scale(1.15)}
+  70%{opacity:.95;transform:translate(calc(-50% + var(--dx,0px)*.75), calc(-50% + var(--dy,0px)*.75 - 20px)) scale(.9)}
+  100%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--dx,0px)), calc(-50% + var(--dy,0px))) scale(.5);
+  }
+}
+
+/* 格子腾空余波（宝石被取走后的淡出涟漪） */
+.fx-cell-vacate{
+  position:fixed;pointer-events:none;z-index:9998;
+  border-radius:50%;border:2px solid var(--gold);
+  animation:fxCellVacate .5s var(--ease-out) forwards;
+}
+@keyframes fxCellVacate{
+  0%{opacity:.7;transform:scale(.5)}
+  100%{opacity:0;transform:scale(1.6)}
+}
+
+/* token pile 收到新宝石的弹跳 */
+.token-pile.pop .stack{
+  animation:pilePop .45s var(--ease);
+}
+@keyframes pilePop{
+  0%{transform:scale(1)}
+  35%{transform:scale(1.28)}
+  60%{transform:scale(.92)}
+  100%{transform:scale(1)}
+}
+.token-pile.pop{
+  animation:pileGlow .5s ease-out;
+}
+@keyframes pileGlow{
+  0%{box-shadow:0 0 0 0 var(--gold-glow)}
+  50%{box-shadow:0 0 0 6px rgba(231,181,74,.15)}
+  100%{box-shadow:0 0 0 0 transparent}
+}
+
+/* 玩家区数值变化的高亮 */
+.p-stat b.bump{
+  animation:statBump .5s var(--ease);
+}
+@keyframes statBump{
+  0%{transform:scale(1);color:var(--gold)}
+  40%{transform:scale(1.4);color:#fff0b8;text-shadow:0 0 10px var(--gold)}
+  100%{transform:scale(1);color:var(--gold)}
+}
+
+/* 卷轴飞行动画（从补给池飞到玩家区） */
+.fx-fly-privilege{
+  position:fixed;width:24px;height:32px;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(160deg,#f5d77a,#b8862b);
+  border:1px solid #5a3a0a;border-radius:3px;
+  box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 16px rgba(231,181,74,.5);
+  animation:fxFlyPrivilege .7s var(--ease-out) forwards;
+}
+.fx-fly-privilege::before{
+  content:'◆';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:#3a2c10;font-size:14px;font-weight:900;
+}
+@keyframes fxFlyPrivilege{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}
+  30%{opacity:1;transform:translate(calc(-50% + var(--dx,0px)*.3), calc(-50% + var(--dy,0px)*.3 - 25px)) scale(1.1) rotate(-10deg)}
+  100%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--dx,0px)), calc(-50% + var(--dy,0px))) scale(.5) rotate(20deg);
+  }
+}
+
+/* 卷轴池数量变化的脉冲 */
+.supply.pop .supply-tokens{
+  animation:supplyPop .4s var(--ease);
+}
+@keyframes supplyPop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.15)}
+  100%{transform:scale(1)}
+}
+
+/* 棋盘补货：新宝石落下的弹跳入场 */
+.token.drop-in{
+  animation:tokenDropIn .5s var(--ease) backwards;
+}
+@keyframes tokenDropIn{
+  0%{opacity:0;transform:translateY(-24px) scale(.4)}
+  60%{opacity:1;transform:translateY(4px) scale(1.12)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* 卡牌飞行动画（从金字塔飞到玩家区） */
+.fx-fly-card{
+  position:fixed;
+  pointer-events:none;z-index:9999;
+  border-radius:10px;
+  background:linear-gradient(170deg,#fbf6e9,#ece1c6);
+  border:1px solid #b9a877;
+  box-shadow:0 12px 32px rgba(0,0,0,.5),0 0 24px rgba(231,181,74,.4);
+  animation:fxFlyCard .75s var(--ease-out) forwards;
+  transform-origin:center;
+}
+@keyframes fxFlyCard{
+  0%{opacity:1;transform:scale(1) rotate(0)}
+  60%{opacity:.9}
+  100%{
+    opacity:0;
+    transform:translate(var(--dx), var(--dy)) scale(.3) rotate(15deg);
+  }
+}
+
+/* 回合切换横幅 */
+.fx-turn-banner{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;z-index:9999;
+  display:flex;align-items:center;gap:14px;
+  padding:18px 36px;
+  background:linear-gradient(135deg,rgba(26,32,48,.96),rgba(18,22,29,.96));
+  border:1px solid rgba(231,181,74,.5);
+  border-radius:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(231,181,74,.2);
+  backdrop-filter:blur(12px);
+  animation:fxTurnBanner 1.6s var(--ease-out) forwards;
+}
+.fx-turn-banner.ai{
+  border-color:rgba(231,77,77,.5);
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(231,77,77,.2);
+}
+.fx-turn-banner .fx-turn-icon{
+  font-size:22px;color:var(--gold);
+  text-shadow:0 0 12px var(--gold-glow);
+  animation:fxTurnIconSpin 1.6s var(--ease-out);
+}
+.fx-turn-banner.ai .fx-turn-icon{color:#e74d4d;text-shadow:0 0 12px rgba(231,77,77,.4)}
+.fx-turn-banner .fx-turn-text{
+  font-family:var(--font-display);font-size:22px;font-weight:700;
+  letter-spacing:2px;color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,.6);
+}
+@keyframes fxTurnBanner{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.7) translateY(20px)}
+  15%{opacity:1;transform:translate(-50%,-50%) scale(1) translateY(0)}
+  80%{opacity:1;transform:translate(-50%,-50%) scale(1) translateY(0)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.95) translateY(-10px)}
+}
+@keyframes fxTurnIconSpin{
+  0%{transform:rotate(-180deg) scale(0)}
+  30%{transform:rotate(0) scale(1.3)}
+  50%{transform:rotate(0) scale(1)}
+  100%{transform:rotate(360deg) scale(1)}
+}
+
+/* ============================================================
+   玩家区 — 更丰富的激活态与回合切换过渡
+   ============================================================ */
+.player-area{
+  transition:background .4s var(--ease-out),box-shadow .4s var(--ease-out),border-color .4s,opacity .3s;
+}
+.player-area.active{
+  box-shadow:
+    inset 0 0 0 1px rgba(231,181,74,.45),
+    inset 0 0 28px rgba(231,181,74,.06),
+    0 -2px 18px rgba(231,181,74,.08);
+  background:linear-gradient(180deg,rgba(28,34,52,.96),rgba(18,22,29,.96));
+  animation:activePulse 3s ease-in-out infinite;
+}
+/* 激活时内容淡入（仅回合切换时由JS添加turn-enter类触发） */
+.player-area.active.turn-enter .p-info,
+.player-area.active.turn-enter .p-tokens{
+  animation:contentFadeIn .45s var(--ease-out);
+}
+@keyframes contentFadeIn{
+  from{opacity:.3;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* 非激活玩家区轻微淡化 */
+.player-area:not(.active){
+  opacity:.82;
+}
+.player-area:not(.active) .p-name{
+  opacity:.7;
+}
+@keyframes activePulse{
+  0%,100%{box-shadow:inset 0 0 0 1px rgba(231,181,74,.4),inset 0 0 24px rgba(231,181,74,.05),0 -2px 14px rgba(231,181,74,.06)}
+  50%{box-shadow:inset 0 0 0 1px rgba(231,181,74,.55),inset 0 0 32px rgba(231,181,74,.09),0 -2px 22px rgba(231,181,74,.12)}
+}
+.p-info .p-name{
+  transition:color .3s;
+}
+.player-area.active .p-info .p-name{color:#fff}
+.player-area.active .p-info .p-name::before{
+  content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 8px var(--gold);
+  margin-right:4px;animation:dotPulse 1.5s infinite;
+}
+
+/* ============================================================
+   棋盘格 — 选中态增强与可点击呼吸
+   ============================================================ */
+.cell{
+  transition:background .2s,box-shadow .2s,transform .2s var(--ease);
+}
+.cell.selectable{
+  cursor:pointer;
+}
+.cell.selectable::after{
+  content:'';position:absolute;inset:0;border-radius:8px;
+  box-shadow:inset 0 0 0 1px rgba(231,181,74,.0);
+  transition:box-shadow .25s;
+  pointer-events:none;
+}
+.cell.selectable:hover{
+  background:rgba(231,181,74,.10);
+  box-shadow:inset 0 0 0 1px rgba(231,181,74,.3);
+}
+.cell.selectable:hover::after{
+  box-shadow:inset 0 0 0 1px rgba(231,181,74,.4),inset 0 0 12px rgba(231,181,74,.1);
+}
+.cell.selected{
+  background:rgba(231,181,74,.18);
+  box-shadow:inset 0 0 0 2px var(--gold),0 0 16px var(--gold-glow);
+  animation:cellSelectedPulse 1.2s ease-in-out infinite;
+}
+@keyframes cellSelectedPulse{
+  0%,100%{box-shadow:inset 0 0 0 2px var(--gold),0 0 12px var(--gold-glow)}
+  50%{box-shadow:inset 0 0 0 2px var(--gold),0 0 22px var(--gold-glow),inset 0 0 14px rgba(231,181,74,.15)}
+}
+.cell.selected .token{
+  transform:scale(1.12);
+  box-shadow:0 0 0 3px var(--gold),0 0 18px var(--gold-glow),inset 0 -4px 8px rgba(0,0,0,.35),inset 0 4px 8px rgba(255,255,255,.25);
+}
+.cell.hl{
+  background:rgba(111,227,163,.18);
+  box-shadow:inset 0 0 0 1px rgba(111,227,163,.4);
+}
+
+/* ============================================================
+   卡牌 — 更细腻的悬停与选中态
+   ============================================================ */
+.card-slot{
+  will-change:transform;
+}
+.card-slot.selectable:hover{
+  transform:translateY(-12px) scale(1.10);
+  box-shadow:0 20px 44px rgba(0,0,0,.7),0 0 0 2px rgba(231,181,74,.5),0 0 28px rgba(231,181,74,.15);
+  z-index:15;
+}
+.card-slot.affordable{
+  animation:affordGlow 2.2s ease-in-out infinite;
+}
+.card-slot.affordable:hover{
+  animation:none;
+  box-shadow:0 0 0 2px #6fe3a3,0 16px 36px rgba(0,0,0,.65),0 0 24px rgba(111,227,163,.3);
+}
+.card-slot.selected{
+  outline:3px solid var(--gold);outline-offset:3px;
+  box-shadow:0 0 28px var(--gold-glow),0 8px 24px rgba(0,0,0,.5);
+  transform:translateY(-5px) scale(1.02);
+  animation:selectedPulse 1.5s ease-in-out infinite;
+}
+@keyframes selectedPulse{
+  0%,100%{box-shadow:0 0 24px var(--gold-glow),0 8px 24px rgba(0,0,0,.5)}
+  50%{box-shadow:0 0 36px rgba(231,181,74,.55),0 8px 24px rgba(0,0,0,.5)}
+}
+
+/* ============================================================
+   按钮增强 — 主按钮脉冲、涟漪
+   ============================================================ */
+.btn.primary:not(:disabled){
+  animation:btnPrimaryPulse 2.4s ease-in-out infinite;
+}
+@keyframes btnPrimaryPulse{
+  0%,100%{box-shadow:0 4px 16px var(--gold-glow)}
+  50%{box-shadow:0 4px 22px var(--gold-glow),0 0 18px rgba(231,181,74,.25)}
+}
+.btn:not(:disabled):active{transform:translateY(0) scale(.97)}
+
+/* ============================================================
+   日志 — 新条目高亮
+   ============================================================ */
+#log .l{
+  padding:4px 8px;border-radius:4px;
+  border-bottom:none;
+  transition:background .4s;
+  animation:logFade .35s var(--ease-out);
+}
+#log .l:last-child{
+  background:linear-gradient(90deg,rgba(231,181,74,.08),transparent);
+}
+
+/* ============================================================
+   模态卡 — 更优雅的入场
+   ============================================================ */
+.modal-card{
+  animation:modalCardIn .45s var(--ease) backwards;
+}
+.modal-card h2{
+  background:linear-gradient(135deg,var(--gold),#fff0b8);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
