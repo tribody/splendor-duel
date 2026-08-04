@@ -27,7 +27,7 @@
   --ease-out:cubic-bezier(.22,1,.36,1);
   --font-display:'Cinzel','Noto Serif SC',serif;
   --font-body:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
-  --font-serif:'Noto Serif SC',serif;
+  --font-serif:'Cormorant Garamond','Noto Serif SC',serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
@@ -93,8 +93,8 @@ body::before{
   animation:logoPulse 3s ease-in-out infinite;
 }
 @keyframes logoPulse{0%,100%{text-shadow:0 0 16px var(--gold-glow)}50%{text-shadow:0 0 28px var(--gold-glow),0 0 40px rgba(231,181,74,.15)}}
-.brand .title{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:2px}
-.brand .subtitle{font-family:var(--font-display);font-size:11px;opacity:.5;letter-spacing:1px}
+.brand .title{font-family:var(--font-display);font-size:19px;font-weight:700;letter-spacing:3px}
+.brand .subtitle{font-family:var(--font-display);font-size:11px;opacity:.5;letter-spacing:2px;font-style:italic}
 .top-actions{display:flex;gap:8px}
 /* 日志切换按钮：仅移动端显示 */
 .btn-log-toggle{display:none}
@@ -152,69 +152,327 @@ body::before{
 .royal-row{display:flex;gap:12px;justify-content:center;margin-top:10px;min-height:156px}
 .royal-row .card-slot{width:112px;height:156px}
 
-/* ===== 卡牌 ===== */
+/* ===== 卡牌 · 璀璨宝石对决 正版风格 ===== */
+:root{
+  --card-parchment-1:#f5ead0;
+  --card-parchment-2:#e8d7ac;
+  --card-parchment-3:#d4bb7f;
+  --card-ink:#2c1a06;
+  --card-frame-out:#5a3a0a;
+  --card-frame-in:#b8862b;
+  --card-frame-hi:#f2d48a;
+  --card-gold:#d9a838;
+  --card-gold-dark:#8c6610;
+}
 .card-slot{
   position:relative;
-  background:linear-gradient(170deg,#fbf6e9,#ece1c6);
-  color:var(--ink);
-  border:1px solid #b9a877;
-  border-radius:10px;
-  box-shadow:var(--shadow-sm);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 12%, rgba(255,255,255,.25), transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(80,50,10,.22), transparent 70%),
+    linear-gradient(180deg, var(--card-parchment-1) 0%, var(--card-parchment-2) 55%, var(--card-parchment-3) 100%);
+  color:var(--card-ink);
+  border:none;
+  border-radius:11px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.25) inset,
+    0 -1px 0 rgba(0,0,0,.18) inset,
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 3px var(--card-frame-in),
+    0 0 0 4px var(--card-frame-out),
+    0 6px 14px rgba(0,0,0,.55),
+    0 2px 5px rgba(0,0,0,.45);
   cursor:pointer;
   transition:transform .3s var(--ease),box-shadow .3s var(--ease-out),filter .3s;
   overflow:hidden;
-  display:flex;flex-direction:column;
+  display:block;
   animation:cardDeal .45s var(--ease-out) backwards;
   transform-origin:center bottom;
+  isolation:isolate;
 }
+/* 羊皮纸底纹 + 暗纹 damask 装饰图案 */
+.card-slot::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:11px;
+  background:
+    /* 四角卷草纹饰 */
+    radial-gradient(ellipse 32px 24px at 10% 8%, rgba(140,95,20,.12), transparent 70%),
+    radial-gradient(ellipse 32px 24px at 90% 8%, rgba(140,95,20,.12), transparent 70%),
+    radial-gradient(ellipse 32px 24px at 10% 92%, rgba(140,95,20,.12), transparent 70%),
+    radial-gradient(ellipse 32px 24px at 90% 92%, rgba(140,95,20,.12), transparent 70%),
+    /* damask 对称花卉暗纹 */
+    repeating-conic-gradient(from 0deg at 50% 50%,
+      transparent 0deg, rgba(120,80,15,.025) 1deg, transparent 2deg, transparent 45deg,
+      rgba(120,80,15,.02) 46deg, transparent 47deg, transparent 90deg),
+    /* 斜向编织纹 */
+    repeating-linear-gradient(45deg, transparent 0 4px, rgba(110,70,10,.028) 4px 5px),
+    repeating-linear-gradient(-45deg, transparent 0 4px, rgba(110,70,10,.022) 4px 5px),
+    /* 整体暖色斑驳 */
+    radial-gradient(circle 220px at 14% 22%, rgba(180,130,40,.1), transparent 55%),
+    radial-gradient(circle 160px at 85% 78%, rgba(90,55,10,.14), transparent 55%);
+  mix-blend-mode:multiply;opacity:.95;
+}
+/* 内暗角 + 内框线 */
+.card-slot::after{
+  content:"";position:absolute;inset:4px;border-radius:8px;z-index:0;pointer-events:none;
+  box-shadow:
+    inset 0 0 22px rgba(70,40,5,.35),
+    inset 0 0 2px rgba(70,40,5,.45),
+    inset 0 0 0 1px rgba(140,95,20,.15);
+}
+.card-slot > *{position:relative;z-index:2}
 @keyframes cardDeal{from{opacity:0;transform:translateY(-24px) scale(.88) rotate(-3deg)}to{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
-.card-slot.empty{background:rgba(0,0,0,.15);border:1px dashed rgba(255,255,255,.12);box-shadow:none;cursor:default;animation:none}
+.card-slot.empty{background:rgba(0,0,0,.15);border:none;box-shadow:none;cursor:default;animation:none}
+.card-slot.empty::before,.card-slot.empty::after{display:none}
 .card-slot:hover{
   transform:translateY(-14px) scale(1.18);
-  box-shadow:0 24px 48px rgba(0,0,0,.7),0 0 0 2px rgba(231,181,74,.6),0 0 36px rgba(231,181,74,.25);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.3) inset,
+    0 -1px 0 rgba(0,0,0,.2) inset,
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 3px var(--card-frame-hi),
+    0 0 0 5px var(--card-frame-out),
+    0 28px 52px rgba(0,0,0,.75),
+    0 0 22px rgba(242,212,138,.4);
   z-index:20;
-  filter:brightness(1.08);
+  filter:brightness(1.06) saturate(1.08);
 }
-.card-slot.selectable:hover{
-  transform:translateY(-16px) scale(1.20);
-}
+.card-slot.selectable:hover{ transform:translateY(-16px) scale(1.20); }
 .card-slot.selected{
-  outline:3px solid var(--gold);outline-offset:3px;
-  box-shadow:0 0 28px var(--gold-glow),0 12px 28px rgba(0,0,0,.55);
+  outline:none;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.3) inset,
+    0 -1px 0 rgba(0,0,0,.2) inset,
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 3px #fff4a8,
+    0 0 0 5px var(--gold),
+    0 14px 30px rgba(0,0,0,.6),
+    0 0 32px var(--gold-glow);
   transform:translateY(-8px) scale(1.06);
+  animation:selectedPulse 1.5s ease-in-out infinite;
 }
+@keyframes selectedPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.08)}}
 .card-slot.affordable{
-  box-shadow:0 0 0 2px #6fe3a3,var(--shadow-sm);
-  animation:affordGlow 2s ease-in-out infinite;
+  animation:affordGlow 2.1s ease-in-out infinite;
 }
-@keyframes affordGlow{0%,100%{box-shadow:0 0 0 2px #6fe3a3,var(--shadow-sm)}50%{box-shadow:0 0 0 2px #6fe3a3,0 0 16px rgba(111,227,163,.4),var(--shadow-sm)}}
+.card-slot.affordable::after{
+  box-shadow:
+    inset 0 0 22px rgba(70,40,5,.35),
+    inset 0 0 0 2px rgba(111,227,163,.7);
+}
+@keyframes affordGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.08) saturate(1.1)}}
 
-/* 顶部色带 */
-.card-slot .card-head{
-  position:relative;height:42px;
-  display:flex;align-items:center;justify-content:center;
-  border-bottom:1px solid rgba(0,0,0,.15);
-  flex-shrink:0;
+/* =============== 1. 顶部色带 =============== */
+.card-head{
+  position:absolute;top:6px;left:6px;right:6px;height:38px;
+  background:linear-gradient(180deg, var(--card-color, #999) 0%, color-mix(in srgb, var(--card-color,#999) 60%, #000) 100%);
+  border-radius:6px 6px 18px 18px / 6px 6px 10px 10px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 0 -2px 0 rgba(0,0,0,.25),
+    inset 0 0 0 1px rgba(0,0,0,.25),
+    0 1px 0 rgba(255,245,200,.35);
+  display:block;overflow:visible;flex-shrink:0;
 }
-.card-slot .card-points{
-  position:absolute;top:4px;left:6px;
-  font-family:var(--font-display);font-weight:900;font-size:18px;color:#fff;
-  text-shadow:0 1px 3px rgba(0,0,0,.7),0 0 6px rgba(0,0,0,.3);
-  line-height:1;
+/* 色带两端复古卷草装饰点 */
+.card-head::before,.card-head::after{
+  content:"◆";position:absolute;top:50%;transform:translateY(-52%);
+  color:rgba(255,235,170,.85);font-size:10px;
+  text-shadow:0 0 3px rgba(0,0,0,.5);
 }
-.card-slot .card-crowns{
-  position:absolute;top:4px;right:6px;
-  font-size:13px;line-height:1;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));
+.card-head::before{left:6px}
+.card-head::after{right:6px}
+
+/* 左上威望圆形徽章 */
+.card-points{
+  position:absolute;top:-10px;left:-10px;
+  width:34px;height:34px;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%,#fff 0%,#f4ead2 40%,#cfbf93 80%);
+  color:var(--card-ink);
+  font-family:var(--font-display);font-weight:900;font-size:20px;line-height:32px;
+  text-align:center;letter-spacing:-1px;
+  box-shadow:
+    inset 0 0 0 2px var(--card-gold-dark),
+    inset 0 0 0 4px var(--card-gold),
+    inset 0 2px 4px rgba(255,255,255,.6),
+    inset 0 -2px 4px rgba(0,0,0,.2),
+    0 2px 5px rgba(0,0,0,.5);
+  z-index:5;text-shadow:0 1px 0 rgba(255,255,255,.75),0 -1px 0 rgba(0,0,0,.15);
 }
-.card-slot .card-bonus-gems{
-  display:flex;gap:3px;align-items:center;justify-content:center;
-  margin-top:18px;
+/* 右上皇冠堆叠 */
+.card-crowns{
+  position:absolute;top:-4px;right:-2px;
+  display:flex;gap:1px;align-items:flex-start;justify-content:flex-end;
+  font-size:12px;line-height:1;
+  filter:drop-shadow(0 1px 0 #5a3a0a) drop-shadow(0 2px 3px rgba(0,0,0,.5));
+  z-index:5;
 }
+.card-crowns > span{
+  display:inline-block;
+  transform-origin:50% 90%;
+}
+.card-crowns > span:nth-child(1){transform:rotate(-6deg) translateY(1px)}
+.card-crowns > span:nth-child(2){transform:translateY(-3px)}
+.card-crowns > span:nth-child(3){transform:rotate(6deg) translateY(1px)}
+/* 色带中央：奖励宝石小图标（真实Splendor Duel 色带中间有一个小宝石标记） */
+.card-bonus-gems{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  display:flex;gap:4px;align-items:center;justify-content:center;
+  margin:0;
+}
+
+/* =============== 2. 中央艺术区 · 哥特拱窗 + 场景背景 =============== */
+.card-art{
+  position:absolute;top:48px;left:7px;right:7px;bottom:40px;
+  border-radius:6px 6px 4px 4px;
+  background:
+    /* 场景天空→地面渐变，带宝石色调 */
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card-color,#999) 18%, #f8edd0) 0%,
+      color-mix(in srgb, var(--card-color,#999) 12%, #eed8a8) 35%,
+      color-mix(in srgb, var(--card-color,#999) 8%, #dcc090) 60%,
+      color-mix(in srgb, var(--card-color,#999) 20%, #c4a46a) 85%,
+      color-mix(in srgb, var(--card-color,#999) 30%, #a88448) 100%);
+  border:1px solid rgba(70,45,10,.45);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.3),
+    inset 0 3px 8px rgba(255,255,255,.15),
+    inset 0 -5px 12px rgba(80,50,10,.3),
+    0 1px 0 rgba(255,255,255,.4);
+  overflow:visible;display:block;
+}
+/* 拱窗场景：顶部拱形 + 拱顶石 + 两侧柱身 + 地面线 */
+.card-art::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:6px 6px 4px 4px;
+  background:
+    /* 拱顶石（正顶部楔形高光） */
+    radial-gradient(ellipse 16px 12px at 50% 0%, rgba(255,245,210,.5), transparent 70%),
+    /* 拱窗内顶部弧形阴影（哥特拱顶感） */
+    radial-gradient(ellipse 120% 50% at 50% 0%, transparent 40%, rgba(80,50,10,.18) 55%, transparent 75%),
+    /* 两侧柱身竖线 */
+    linear-gradient(90deg, rgba(80,50,10,.22) 0%, transparent 8%, transparent 92%, rgba(80,50,10,.22) 100%),
+    /* 地面线 */
+    linear-gradient(0deg, rgba(80,50,10,.2) 0%, rgba(80,50,10,.08) 3%, transparent 6%),
+    /* 远景山丘轮廓 */
+    radial-gradient(ellipse 80% 20px at 50% 75%, rgba(100,70,20,.15), transparent 60%);
+}
+/* 场景细节：星点/光斑 + 暗角 */
+.card-art::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:6px 6px 4px 4px;
+  background:
+    /* 光斑散布 */
+    radial-gradient(circle 2px at 30% 25%, rgba(255,245,200,.4), transparent),
+    radial-gradient(circle 1.5px at 70% 20%, rgba(255,245,200,.3), transparent),
+    radial-gradient(circle 1px at 50% 15%, rgba(255,245,200,.35), transparent),
+    radial-gradient(circle 1.5px at 20% 35%, rgba(255,245,200,.25), transparent),
+    radial-gradient(circle 1px at 80% 40%, rgba(255,245,200,.2), transparent),
+    /* 暗角 */
+    radial-gradient(ellipse 100% 80% at 50% 50%, transparent 50%, rgba(60,35,5,.25) 100%);
+}
+/* 中央大型奖励宝石（真实立体宝石刻面造型） */
+.card-art .big-gem{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:56px;height:56px;
+}
+.card-art .big-gem.gem-2{ transform:translate(-78%,-42%) scale(.75); filter:brightness(.95); z-index:1; }
+.card-art .big-gem.gem-1{ z-index:2; }
+/* 宝石3D造型：clip-path 多边形刻面 + 多层径向/锥形渐变 */
+.card-art .big-gem-inner{
+  position:absolute;inset:0;
+  clip-path:polygon(50% 0%, 88% 22%, 94% 55%, 78% 92%, 50% 100%, 22% 92%, 6% 55%, 12% 22%);
+}
+.card-art .big-gem.white .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #ffffff 0deg, #e6ecf3 60deg, #c0ccd9 120deg, #a9b5c4 180deg, #dbe3ec 240deg, #ffffff 300deg, #ffffff 360deg);}
+.card-art .big-gem.blue  .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #c9daff 0deg, #7aaaff 60deg, #2f6df0 120deg, #1a4096 180deg, #4c83f0 240deg, #c9daff 300deg, #c9daff 360deg);}
+.card-art .big-gem.green .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #cdfbe0 0deg, #7ff0ab 60deg, #1faa59 120deg, #0d6e37 180deg, #3fbf76 240deg, #cdfbe0 300deg, #cdfbe0 360deg);}
+.card-art .big-gem.red   .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #ffd0d0 0deg, #ff8080 60deg, #e23b3b 120deg, #8a1818 180deg, #f05f5f 240deg, #ffd0d0 300deg, #ffd0d0 360deg);}
+.card-art .big-gem.black .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #808898 0deg, #4a5262 60deg, #20232c 120deg, #0a0c10 180deg, #353a46 240deg, #808898 300deg, #808898 360deg);}
+.card-art .big-gem.pearl .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #fff4f8 0deg, #ffd9e4 60deg, #f3a5bc 120deg, #c47a95 180deg, #f5bfce 240deg, #fff4f8 300deg, #fff4f8 360deg);}
+.card-art .big-gem.gold  .big-gem-inner{ background:conic-gradient(from 200deg at 50% 38%, #fff0b8 0deg, #ffd966 60deg, #e6b027 120deg, #a07412 180deg, #e6b027 240deg, #fff0b8 300deg, #fff0b8 360deg);}
+/* 宝石刻面高光分割线 */
+.card-art .big-gem-inner::before{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(135deg, transparent 49.2%, rgba(255,255,255,.55) 49.6%, transparent 50%),
+    linear-gradient(45deg,  transparent 49.2%, rgba(255,255,255,.28) 49.6%, transparent 50%),
+    linear-gradient(90deg,  transparent 49.6%, rgba(0,0,0,.15) 50%, transparent 50.4%),
+    linear-gradient(0deg,   transparent 49.6%, rgba(0,0,0,.15) 50%, transparent 50.4%);
+  mix-blend-mode:overlay;
+}
+/* 宝石顶部闪耀高光 */
+.card-art .big-gem-inner::after{
+  content:"";position:absolute;top:8%;left:22%;width:30%;height:22%;
+  background:radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.9) 0%, rgba(255,255,255,.35) 55%, transparent 75%);
+  filter:blur(.5px);
+  border-radius:50%;
+  transform:rotate(-12deg);
+}
+/* ×2 标记徽章 */
+.card-art .x2-badge{
+  position:absolute;bottom:-4px;right:-2px;
+  min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;
+  border-radius:11px;
+  background:linear-gradient(180deg,#fff,#e6dcbc);
+  color:var(--card-ink);font-family:var(--font-display);font-weight:900;font-size:13px;line-height:20px;text-align:center;
+  box-shadow:
+    inset 0 0 0 1px var(--card-gold-dark),
+    inset 0 0 0 2px var(--card-gold),
+    0 2px 4px rgba(0,0,0,.45);
+  z-index:6;
+}
+
+/* =============== 3. 能力丝带横幅 =============== */
+.card-ability-banner{
+  position:absolute;left:50%;bottom:44px;transform:translateX(-50%);
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 10px 3px;border-radius:3px;
+  background:
+    linear-gradient(180deg, #f4d682 0%, #d9a838 50%, #a1730f 100%);
+  color:#3a2804;font-family:var(--font-serif);font-size:11px;font-weight:600;letter-spacing:.3px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.6),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 1px 3px rgba(0,0,0,.5);
+  white-space:nowrap;
+  z-index:5;
+}
+.card-ability-banner::before,.card-ability-banner::after{
+  content:"";position:absolute;top:0;bottom:0;width:10px;
+  background:linear-gradient(180deg, #f4d682 0%, #d9a838 50%, #a1730f 100%);
+}
+.card-ability-banner::before{left:-7px;clip-path:polygon(100% 0, 100% 100%, 0 50%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,0,0,.2)}
+.card-ability-banner::after{ right:-7px;clip-path:polygon(0 0, 0 100%, 100% 50%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,0,0,.2)}
+.card-ability-banner .abil-icon{font-size:13px;line-height:1}
+
+/* =============== 4. 底部费用栏 =============== */
+.card-cost{
+  position:absolute;left:6px;right:6px;bottom:6px;height:30px;
+  display:flex;gap:2px;align-items:center;justify-content:center;
+  padding:0 4px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.15), rgba(0,0,0,.12)),
+    repeating-linear-gradient(90deg, rgba(90,58,10,.11) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #efe3c0, #d9c289);
+  border-radius:4px;
+  border:1px solid rgba(70,45,10,.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.6),
+    inset 0 -1px 0 rgba(0,0,0,.18),
+    0 1px 0 rgba(255,245,200,.4);
+  min-height:0;
+}
+/* 小宝石通用样式 */
 .card-gem-icon{
   width:17px;height:17px;border-radius:50%;
-  box-shadow:inset 0 -2px 4px rgba(0,0,0,.3),inset 0 2px 3px rgba(255,255,255,.4),0 1px 2px rgba(0,0,0,.3);
-  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    inset 0 -3px 6px rgba(0,0,0,.35),
+    inset 0 2px 4px rgba(255,255,255,.45),
+    0 1px 2px rgba(0,0,0,.35),
+    0 0 0 1px rgba(0,0,0,.25);
+  position:relative;overflow:hidden;
+}
+.card-gem-icon::after{
+  content:"";position:absolute;top:15%;left:22%;width:28%;height:22%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.85),transparent 70%);
+  border-radius:50%;filter:blur(.4px);
 }
 .card-gem-icon.white{background:radial-gradient(circle at 35% 30%,#fff,#c3cedb 60%,#9aa7b5)}
 .card-gem-icon.blue{background:radial-gradient(circle at 35% 30%,#7fb0ff,#2f6df0 60%,#1b46b0)}
@@ -222,47 +480,21 @@ body::before{
 .card-gem-icon.red{background:radial-gradient(circle at 35% 30%,#ff9a9a,#e23b3b 60%,#9c1d1d)}
 .card-gem-icon.black{background:radial-gradient(circle at 35% 30%,#5a6070,#20232c 60%,#0a0c10)}
 .card-gem-icon.pearl{background:radial-gradient(circle at 35% 30%,#fff6f9,#f3c9d4 55%,#cf8aa0)}
+.card-gem-icon.gold{background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c84b 55%,#b8862b)}
 
-/* 能力横幅 */
-.card-slot .card-ability-banner{
-  display:flex;align-items:center;justify-content:center;gap:4px;
-  background:linear-gradient(180deg,#3a2c10,#2a1f08);
-  color:#f5d77a;font-size:11px;font-weight:700;
-  padding:3px 5px;border-bottom:1px solid rgba(0,0,0,.2);
-  flex-shrink:0;letter-spacing:.5px;
-}
-.card-slot .card-ability-banner .abil-icon{font-size:13px}
-
-/* 中央装饰区 */
-.card-slot .card-art{
-  flex:1;position:relative;min-height:18px;
-  border-top:1px solid rgba(0,0,0,.1);
-  border-bottom:1px solid rgba(0,0,0,.1);
-}
-.card-slot .card-art::before{
-  content:"";position:absolute;inset:0;
-  box-shadow:inset 0 0 14px rgba(0,0,0,.28);
-  pointer-events:none;z-index:1;
-}
-.card-slot .card-art::after{
-  content:"";position:absolute;inset:3px 6px;
-  background:
-    radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.22),transparent 55%),
-    linear-gradient(180deg,transparent 50%,rgba(0,0,0,.22) 100%);
-  border-radius:4px;pointer-events:none;z-index:2;
-}
-
-/* 底部费用 */
-.card-slot .card-cost{
-  display:flex;gap:3px;align-items:center;flex-wrap:wrap;
-  padding:4px 5px;background:rgba(0,0,0,.06);
-  border-top:1px solid rgba(0,0,0,.1);
-  min-height:22px;flex-shrink:0;
-}
 .cost-gem{
-  width:13px;height:13px;border-radius:50%;
-  box-shadow:inset 0 -1px 2px rgba(0,0,0,.3),inset 0 1px 2px rgba(255,255,255,.3);
-  border:1px solid rgba(0,0,0,.2);
+  width:17px;height:17px;border-radius:50%;
+  box-shadow:
+    inset 0 -3px 5px rgba(0,0,0,.35),
+    inset 0 2px 3px rgba(255,255,255,.45),
+    0 1px 2px rgba(0,0,0,.4),
+    0 0 0 1px rgba(0,0,0,.28);
+  position:relative;overflow:hidden;flex:0 0 auto;
+}
+.cost-gem::after{
+  content:"";position:absolute;top:14%;left:22%;width:28%;height:22%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.8),transparent 70%);
+  border-radius:50%;filter:blur(.4px);
 }
 .cost-gem.white{background:radial-gradient(circle at 35% 30%,#fff,#c3cedb 60%,#9aa7b5)}
 .cost-gem.blue{background:radial-gradient(circle at 35% 30%,#7fb0ff,#2f6df0 60%,#1b46b0)}
@@ -272,66 +504,174 @@ body::before{
 .cost-gem.pearl{background:radial-gradient(circle at 35% 30%,#fff6f9,#f3c9d4 55%,#cf8aa0)}
 .cost-gem.gold{background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c84b 55%,#b8862b)}
 
-/* 牌堆背面 */
+/* =============== 牌堆背面 =============== */
 .card-slot .deck-back{
-  width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-radius:10px;position:relative;
+  position:absolute;inset:0;
+  border-radius:11px;z-index:3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+}
+.card-slot.lvl1 .deck-back{
+  background:
+    repeating-linear-gradient(135deg, #0f6a3f 0 5px, #125e38 5px 10px),
+    linear-gradient(180deg,#167949,#0b4528);
+}
+.card-slot.lvl2 .deck-back{
+  background:
+    repeating-linear-gradient(135deg, #a97b10 0 5px, #885f0c 5px 10px),
+    linear-gradient(180deg,#b88715,#6a4a04);
+}
+.card-slot.lvl3 .deck-back{
+  background:
+    repeating-linear-gradient(135deg, #174a94 0 5px, #103a78 5px 10px),
+    linear-gradient(180deg,#2258a9,#0c2e63);
+}
+.card-slot .deck-back::before{
+  content:"";position:absolute;inset:6px;border-radius:7px;
+  box-shadow:
+    inset 0 0 0 1px rgba(242,212,138,.35),
+    inset 0 0 12px rgba(0,0,0,.35);
 }
 .card-slot .deck-back::after{
-  content:'';position:absolute;inset:0;border-radius:10px;
-  background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 50%);
-  pointer-events:none;
+  content:"";position:absolute;inset:0;border-radius:11px;
+  background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,transparent 55%);pointer-events:none;
 }
-.card-slot.lvl1 .deck-back{background:repeating-linear-gradient(135deg,#1a5e3a,#1a5e3a 6px,#14502f 6px,#14502f 12px)}
-.card-slot.lvl2 .deck-back{background:repeating-linear-gradient(135deg,#8a6e1a,#8a6e1a 6px,#705816 6px,#705816 12px)}
-.card-slot.lvl3 .deck-back{background:repeating-linear-gradient(135deg,#1a3a6e,#1a3a6e 6px,#142f56 6px,#142f56 12px)}
 .deck-back .deck-level{
-  width:34px;height:34px;border-radius:50%;
-  background:rgba(0,0,0,.35);border:2px solid rgba(255,215,100,.5);
-  display:flex;align-items:center;justify-content:center;
-  color:#f5d77a;font-family:var(--font-display);font-weight:800;font-size:20px;
-  margin-bottom:3px;text-shadow:0 0 8px rgba(255,215,100,.3);
+  width:42px;height:42px;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%, #fff3c7 0%, #d9a838 50%, #8c6610 100%);
+  border:none;color:#3a2804;font-family:var(--font-display);font-weight:900;font-size:22px;
+  line-height:42px;text-align:center;
+  box-shadow:
+    inset 0 0 0 2px rgba(70,45,10,.7),
+    inset 0 0 0 4px rgba(242,212,138,.7),
+    inset 0 2px 5px rgba(255,255,255,.7),
+    inset 0 -2px 5px rgba(0,0,0,.3),
+    0 4px 10px rgba(0,0,0,.55);
+  text-shadow:0 1px 0 rgba(255,255,255,.6);
+  margin-bottom:2px;
 }
-.deck-back .deck-count{color:rgba(255,215,100,.75);font-size:12px;font-weight:600}
+.deck-back .deck-count{
+  color:#f5e6b6;font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:1px;
+  text-shadow:0 1px 2px rgba(0,0,0,.6);
+}
 
-/* 王室卡 — 与金字塔卡同样式（112×156），紫色调 + 人物背景 + 王冠 */
+/* =============== 王室卡（紫色贵宾卡） =============== */
 .card-slot.royal-card{
-  background:linear-gradient(170deg,#3a2c5a,#211836);
-  border:1px solid #8a7aba;color:#e9e1ff;
-  box-shadow:var(--shadow-sm),0 0 12px rgba(138,122,186,.2);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 12%, rgba(255,225,255,.2), transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(40,10,55,.3), transparent 70%),
+    linear-gradient(180deg, #ead9ff 0%, #c9b0f0 55%, #8c6bb9 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.3) inset,
+    0 -1px 0 rgba(0,0,0,.2) inset,
+    0 0 0 1px #3a1c5f,
+    0 0 0 3px #a478e0,
+    0 0 0 4px #3a1c5f,
+    0 8px 18px rgba(0,0,0,.6),
+    0 0 18px rgba(180,140,255,.25);
+}
+.card-slot.royal-card::after{
+  box-shadow:
+    inset 0 0 22px rgba(50,15,80,.35),
+    inset 0 0 2px rgba(70,40,110,.55);
 }
 .card-slot.royal-card::before{
-  content:'';position:absolute;inset:0;border-radius:10px;
-  background:radial-gradient(circle at 50% 30%,rgba(255,215,100,.10),transparent 60%);
-  pointer-events:none;z-index:0;
+  background:
+    /* 四角卷草纹饰 */
+    radial-gradient(ellipse 32px 24px at 10% 8%, rgba(80,40,120,.1), transparent 70%),
+    radial-gradient(ellipse 32px 24px at 90% 8%, rgba(80,40,120,.1), transparent 70%),
+    radial-gradient(ellipse 32px 24px at 10% 92%, rgba(80,40,120,.1), transparent 70%),
+    radial-gradient(ellipse 32px 24px at 90% 92%, rgba(80,40,120,.1), transparent 70%),
+    /* damask 暗纹 */
+    repeating-conic-gradient(from 0deg at 50% 50%,
+      transparent 0deg, rgba(60,20,100,.02) 1deg, transparent 2deg, transparent 45deg,
+      rgba(60,20,100,.015) 46deg, transparent 47deg, transparent 90deg),
+    repeating-linear-gradient(45deg, transparent 0 4px, rgba(60,20,100,.03) 4px 5px),
+    repeating-linear-gradient(-45deg, transparent 0 4px, rgba(60,20,100,.022) 4px 5px),
+    /* 整体紫色斑驳 */
+    radial-gradient(circle 220px at 14% 22%, rgba(220,190,255,.18), transparent 55%),
+    radial-gradient(circle 160px at 85% 78%, rgba(60,20,100,.18), transparent 55%);
 }
-.card-slot.royal-card > *{position:relative;z-index:1}
 .card-slot.royal-card:hover{
   transform:translateY(-14px) scale(1.10);
-  box-shadow:0 24px 48px rgba(0,0,0,.7),0 0 0 2px rgba(180,140,255,.7),0 0 36px rgba(180,140,255,.3);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.3) inset,
+    0 -1px 0 rgba(0,0,0,.2) inset,
+    0 0 0 1px #3a1c5f,
+    0 0 0 3px #e4ccff,
+    0 0 0 5px #6a3ea8,
+    0 26px 50px rgba(0,0,0,.72),
+    0 0 36px rgba(200,170,255,.4);
   z-index:20;
 }
-.card-slot.royal-card .royal-head{border-bottom-color:rgba(0,0,0,.25)}
-.card-slot.royal-card .royal-gem{margin-top:14px}
+.card-slot.royal-card .royal-head{
+  background:linear-gradient(180deg, #7247b8 0%, #3f1f70 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,220,255,.3),
+    inset 0 -2px 0 rgba(0,0,0,.3),
+    inset 0 0 0 1px rgba(80,30,120,.9),
+    0 1px 0 rgba(230,210,255,.3);
+  height:40px;
+}
+.card-slot.royal-card .royal-head::before,
+.card-slot.royal-card .royal-head::after{ color:#f2d48a }
+.card-slot.royal-card .card-points{
+  width:34px;height:34px;line-height:32px;
+  background:radial-gradient(circle at 35% 30%,#fff4c7,#f1ce73 50%,#a0740c 100%);
+  color:#4a2c00;
+  box-shadow:
+    inset 0 0 0 2px #5a3a0a,
+    inset 0 0 0 4px #c88cff,
+    inset 0 2px 4px rgba(255,255,255,.7),
+    inset 0 -2px 4px rgba(0,0,0,.25),
+    0 2px 5px rgba(0,0,0,.55);
+  text-shadow:0 1px 0 rgba(255,255,255,.6);
+}
+.card-slot.royal-card .royal-gem{margin-top:0}
 .card-slot.royal-card .royal-crest{
-  font-size:22px;color:#ffd56a;line-height:1;
-  text-shadow:0 0 10px rgba(255,213,106,.5),0 2px 4px rgba(0,0,0,.6);
+  position:absolute;top:-6px;right:-2px;z-index:6;
+  font-size:28px;color:#ffd966;line-height:1;
+  filter:
+    drop-shadow(0 0 6px rgba(255,213,106,.6))
+    drop-shadow(0 2px 2px rgba(0,0,0,.5));
   animation:crestGlow 2.5s ease-in-out infinite;
 }
-@keyframes crestGlow{0%,100%{text-shadow:0 0 10px rgba(255,213,106,.5),0 2px 4px rgba(0,0,0,.6)}50%{text-shadow:0 0 18px rgba(255,213,106,.8),0 2px 4px rgba(0,0,0,.6)}}
+@keyframes crestGlow{0%,100%{filter:drop-shadow(0 0 6px rgba(255,213,106,.6)) drop-shadow(0 2px 2px rgba(0,0,0,.5))}50%{filter:drop-shadow(0 0 14px rgba(255,213,106,.95)) drop-shadow(0 2px 2px rgba(0,0,0,.5))}}
 .card-slot.royal-card .royal-banner{
-  background:linear-gradient(180deg,#4a3a6a,#2a1f4a);
-  color:#e9d7ff;border-bottom-color:rgba(0,0,0,.3);
+  background:linear-gradient(180deg,#e5cfff 0%, #a77ee0 50%, #5d3296 100%);
+  color:#2b1352;
+  bottom:46px;
+}
+.card-slot.royal-card .royal-banner::before,
+.card-slot.royal-card .royal-banner::after{
+  background:linear-gradient(180deg,#e5cfff 0%, #a77ee0 50%, #5d3296 100%);
+}
+.card-slot.royal-card .royal-art{
+  top:50px;bottom:44px;
+  background:
+    /* 场景天空→地面渐变（紫色调） */
+    linear-gradient(180deg,
+      #e8d5f5 0%, #d7bef2 30%, #b89adf 60%, #8861b8 85%, #5d3296 100%);
+  border-color:rgba(80,30,120,.5);
+  border-radius:6px 6px 4px 4px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.25),
+    inset 0 3px 8px rgba(255,255,255,.15),
+    inset 0 -5px 12px rgba(40,10,60,.3);
 }
 .card-slot.royal-card .royal-cost{
-  background:rgba(0,0,0,.15);justify-content:center;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(0,0,0,.12)),
+    repeating-linear-gradient(90deg, rgba(60,20,100,.13) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg,#e0ccf5,#b89adf);
+  border-color:rgba(70,30,110,.6);
+  justify-content:center;
 }
 .card-slot.royal-card .royal-tag{
-  font-size:9px;color:#c9b3ff;letter-spacing:.5px;text-align:center;
-  text-shadow:0 1px 2px rgba(0,0,0,.5);
+  font-size:10px;color:#3a1c5f;letter-spacing:.5px;text-align:center;font-weight:700;
+  text-shadow:0 1px 0 rgba(255,255,255,.4);
 }
-.card-slot.royal-card.taken{opacity:.18;filter:grayscale(.9);pointer-events:none}
-.card-slot.royal-card .card-points{color:#ffd56a;text-shadow:0 1px 3px rgba(0,0,0,.8),0 0 6px rgba(255,213,106,.4)}
+.card-slot.royal-card.taken{opacity:.2;filter:grayscale(.85);pointer-events:none}
 
 /* ---- 棋盘 ---- */
 #boardWrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
@@ -389,7 +729,7 @@ body::before{
 /* 补给 */
 #supplies{display:flex;gap:18px;align-items:flex-start}
 .supply{display:flex;flex-direction:column;align-items:center;gap:4px}
-.supply-label{font-size:11px;opacity:.6;letter-spacing:1px}
+.supply-label{font-family:var(--font-serif);font-size:12px;opacity:.6;letter-spacing:1px}
 .supply-tokens{display:flex;gap:3px;align-items:center;min-height:28px}
 
 /* ---- 玩家区（侧栏纵向布局） ---- */
@@ -405,17 +745,18 @@ body::before{
   box-shadow:inset 0 0 0 1px rgba(231,181,74,.4),inset 0 0 20px rgba(231,181,74,.04);
   background:linear-gradient(180deg,rgba(26,32,48,.95),rgba(18,22,29,.95));
 }
-.player-area .p-info{display:flex;flex-direction:column;gap:5px;font-size:11px}
+.player-area .p-info{display:flex;flex-direction:column;gap:5px;font-family:var(--font-serif);font-size:clamp(13px,1.1vw,16px)}
 .p-info .p-name{
-  font-family:var(--font-serif);font-size:15px;font-weight:700;
+  font-family:var(--font-serif);font-size:clamp(16px,1.35vw,20px);font-weight:600;
   display:flex;align-items:center;gap:6px;
   padding-bottom:4px;border-bottom:1px solid var(--line2);
+  letter-spacing:.3px;
 }
 .p-info .p-stats{display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;opacity:.95}
-.p-stat{display:flex;justify-content:space-between;gap:6px;font-size:11px}
-.p-stat b{color:var(--gold);font-family:var(--font-display)}
+.p-stat{display:flex;justify-content:space-between;gap:6px;font-family:var(--font-serif);font-size:clamp(13px,1.05vw,15px)}
+.p-stat b{color:var(--gold);font-family:var(--font-display);font-size:inherit}
 .win-prog{display:flex;flex-direction:column;gap:3px;margin-top:2px}
-.prog{font-size:9px}
+.prog{font-size:clamp(10px,.8vw,12px)}
 .prog .bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-top:2px}
 .prog .bar > i{display:block;height:100%;border-radius:3px;transition:width .5s var(--ease-out)}
 .prog:nth-child(1) .bar > i{background:linear-gradient(90deg,var(--gold),#fff0b8)}
@@ -424,12 +765,12 @@ body::before{
 
 /* 玩家区段标题（手持宝石 / 持有卡牌 / 预留卡牌） */
 .p-section-label{
-  font-size:9px;letter-spacing:1px;opacity:.5;text-transform:uppercase;
+  font-size:clamp(10px,.8vw,12px);letter-spacing:1px;opacity:.5;text-transform:uppercase;
   margin-bottom:2px;
 }
 
 .p-tokens{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
-.token-pile{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;transition:transform .2s}
+.token-pile{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:clamp(11px,.9vw,13px);transition:transform .2s}
 .token-pile:hover{transform:scale(1.08)}
 .token-pile .stack{position:relative;width:24px;height:26px}
 .token-pile .stack .token{position:absolute;left:2px;width:20px;height:20px}
@@ -439,33 +780,221 @@ body::before{
 .p-cards{display:flex;flex-direction:column;gap:5px;overflow:visible}
 .p-cards .card-line{display:flex;gap:4px;flex-wrap:wrap}
 .mini-card{
-  width:40px;height:52px;border-radius:6px;
-  background:linear-gradient(170deg,#fbf6e9,#ece1c6);
-  border:1px solid #b9a877;color:var(--ink);
-  display:flex;flex-direction:column;
-  position:relative;font-size:10px;box-shadow:0 2px 6px rgba(0,0,0,.4);
+  width:40px;height:54px;border-radius:5px;
+  background:
+    /* 暖色斑驳 */
+    radial-gradient(ellipse 80% 60% at 50% 10%, rgba(255,255,255,.22), transparent 60%),
+    radial-gradient(circle 60px at 15% 85%, rgba(90,55,10,.12), transparent 60%),
+    /* damask 暗纹 */
+    repeating-linear-gradient(45deg, transparent 0 3px, rgba(110,70,10,.03) 3px 4px),
+    repeating-linear-gradient(-45deg, transparent 0 3px, rgba(110,70,10,.022) 3px 4px),
+    /* 羊皮纸底 */
+    linear-gradient(180deg, #f5ead0 0%, #e8d7ac 55%, #d4bb7f 100%);
+  border:none;
+  color:var(--card-ink);
+  display:block;
+  position:relative;font-size:9px;
+  box-shadow:
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 2px var(--card-frame-in),
+    0 2px 6px rgba(0,0,0,.5);
   overflow:visible;transition:transform .25s var(--ease),box-shadow .25s,z-index 0s;
   cursor:zoom-in;
 }
-.mini-card .mc-band{border-radius:6px 6px 0 0;overflow:hidden}
-.mini-card .mc-body{border-radius:0 0 6px 6px;overflow:hidden}
-/* hover 放大预览：放大到接近原卡尺寸，提升 z-index，显示完整内容 */
+.mini-card::before{
+  content:"";position:absolute;inset:2px;border-radius:3px;z-index:0;pointer-events:none;
+  box-shadow:
+    inset 0 0 10px rgba(70,40,5,.32),
+    inset 0 0 0 1px rgba(140,95,20,.12);
+}
+.mini-card > *{position:relative;z-index:1}
+.mini-card .mc-head{
+  position:absolute;top:2px;left:2px;right:2px;height:14px;
+  border-radius:3px 3px 7px 7px / 3px 3px 4px 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.3),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    inset 0 0 0 1px rgba(0,0,0,.2);
+}
+.mini-card .mc-head .mc-pts{
+  position:absolute;top:-4px;left:-3px;
+  width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#f4ead2 40%,#cfbf93 80%);
+  color:var(--card-ink);
+  font-family:var(--font-display);font-weight:900;font-size:9px;line-height:14px;text-align:center;
+  box-shadow:
+    inset 0 0 0 1px var(--card-gold-dark),
+    inset 0 0 0 2px var(--card-gold),
+    0 1px 2px rgba(0,0,0,.5);
+  text-shadow:0 1px 0 rgba(255,255,255,.7);
+}
+.mini-card .mc-head .mc-cr{
+  position:absolute;top:-2px;right:-1px;
+  font-size:7.5px;line-height:1;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.5));
+}
+/* 中央宝石刻面 + 场景背景 */
+.mini-card .mc-gem{
+  position:absolute;top:18px;left:3px;right:3px;bottom:11px;
+  border-radius:2px 2px 1px 1px;
+  background:
+    /* 场景天空→地面 */
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--mc,#999) 18%, #f8edd0) 0%,
+      color-mix(in srgb, var(--mc,#999) 12%, #eed8a8) 40%,
+      color-mix(in srgb, var(--mc,#999) 25%, #c4a46a) 80%,
+      color-mix(in srgb, var(--mc,#999) 35%, #a88448) 100%);
+  border:1px solid rgba(70,45,10,.45);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.25),
+    inset 0 -3px 6px rgba(0,0,0,.22),
+    inset 0 2px 3px rgba(255,255,255,.2);
+}
+.mini-card .mc-gem-inner{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:20px;height:20px;
+  clip-path:polygon(50% 0%, 88% 22%, 94% 55%, 78% 92%, 50% 100%, 22% 92%, 6% 55%, 12% 22%);
+}
+.mini-card .mc-gem-inner.white{ background:conic-gradient(from 200deg at 50% 38%, #fff 0deg, #e6ecf3 60deg, #c0ccd9 120deg, #a9b5c4 180deg, #dbe3ec 240deg, #fff 300deg, #fff 360deg);}
+.mini-card .mc-gem-inner.blue{ background:conic-gradient(from 200deg at 50% 38%, #c9daff 0deg, #7aaaff 60deg, #2f6df0 120deg, #1a4096 180deg, #4c83f0 240deg, #c9daff 300deg, #c9daff 360deg);}
+.mini-card .mc-gem-inner.green{ background:conic-gradient(from 200deg at 50% 38%, #cdfbe0 0deg, #7ff0ab 60deg, #1faa59 120deg, #0d6e37 180deg, #3fbf76 240deg, #cdfbe0 300deg, #cdfbe0 360deg);}
+.mini-card .mc-gem-inner.red{ background:conic-gradient(from 200deg at 50% 38%, #ffd0d0 0deg, #ff8080 60deg, #e23b3b 120deg, #8a1818 180deg, #f05f5f 240deg, #ffd0d0 300deg, #ffd0d0 360deg);}
+.mini-card .mc-gem-inner.black{ background:conic-gradient(from 200deg at 50% 38%, #808898 0deg, #4a5262 60deg, #20232c 120deg, #0a0c10 180deg, #353a46 240deg, #808898 300deg, #808898 360deg);}
+.mini-card .mc-gem-inner.pearl{ background:conic-gradient(from 200deg at 50% 38%, #fff4f8 0deg, #ffd9e4 60deg, #f3a5bc 120deg, #c47a95 180deg, #f5bfce 240deg, #fff4f8 300deg, #fff4f8 360deg);}
+.mini-card .mc-gem-inner.gold{ background:conic-gradient(from 200deg at 50% 38%, #fff0b8 0deg, #ffd966 60deg, #e6b027 120deg, #a07412 180deg, #e6b027 240deg, #fff0b8 300deg, #fff0b8 360deg);}
+.mini-card .mc-gem-inner::after{
+  content:"";position:absolute;top:10%;left:22%;width:30%;height:22%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.85),transparent 70%);
+  border-radius:50%;filter:blur(.3px);
+}
+.mini-card .mc-gem .mc-x2{
+  position:absolute;bottom:-3px;right:-2px;z-index:3;
+  min-width:10px;height:10px;padding:0 3px;box-sizing:border-box;
+  border-radius:5px;
+  background:linear-gradient(180deg,#fff,#e6dcbc);
+  color:var(--card-ink);font-family:var(--font-display);font-weight:900;font-size:7px;line-height:9px;text-align:center;
+  box-shadow:
+    inset 0 0 0 1px var(--card-gold-dark),
+    inset 0 0 0 1.5px var(--card-gold),
+    0 1px 2px rgba(0,0,0,.45);
+}
+.mini-card .mc-gem .mc-abi{
+  position:absolute;top:-2px;right:-2px;z-index:3;
+  width:11px;height:11px;border-radius:50%;
+  background:linear-gradient(180deg,#f4d682,#a1730f);
+  color:#3a2804;font-size:8px;line-height:11px;text-align:center;font-weight:800;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 1px 2px rgba(0,0,0,.45);
+}
+/* 底部费用条 */
+.mini-card .mc-foot{
+  position:absolute;left:2px;right:2px;bottom:2px;height:9px;
+  border-radius:2px;
+  display:flex;gap:1px;align-items:center;justify-content:center;
+  padding:0 1px;
+  background:linear-gradient(180deg, #efe3c0, #d9c289);
+  border:1px solid rgba(70,45,10,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.2);
+}
+.mini-card .mc-cg{
+  width:7px;height:7px;border-radius:50%;flex:0 0 auto;
+  box-shadow:inset 0 -1px 2px rgba(0,0,0,.35),inset 0 1px 1.5px rgba(255,255,255,.45),0 0 0 1px rgba(0,0,0,.3);
+  position:relative;overflow:hidden;
+}
+.mini-card .mc-cg::after{content:"";position:absolute;top:15%;left:22%;width:28%;height:22%;background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.8),transparent 70%);border-radius:50%;filter:blur(.3px)}
+.mini-card .mc-cg.white{background:radial-gradient(circle at 35% 30%,#fff,#c3cedb 60%,#9aa7b5)}
+.mini-card .mc-cg.blue{background:radial-gradient(circle at 35% 30%,#7fb0ff,#2f6df0 60%,#1b46b0)}
+.mini-card .mc-cg.green{background:radial-gradient(circle at 35% 30%,#7ef0ad,#1faa59 60%,#0f7a3e)}
+.mini-card .mc-cg.red{background:radial-gradient(circle at 35% 30%,#ff9a9a,#e23b3b 60%,#9c1d1d)}
+.mini-card .mc-cg.black{background:radial-gradient(circle at 35% 30%,#5a6070,#20232c 60%,#0a0c10)}
+.mini-card .mc-cg.pearl{background:radial-gradient(circle at 35% 30%,#fff6f9,#f3c9d4 55%,#cf8aa0)}
+.mini-card .mc-cg.gold{background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c84b 55%,#b8862b)}
+
+/* 王室小卡 */
+.mini-card.royal-mini{
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 10%, rgba(255,225,255,.22), transparent 60%),
+    linear-gradient(180deg, #ead9ff 0%, #c9b0f0 55%, #8c6bb9 100%);
+  box-shadow:
+    0 0 0 1px #3a1c5f,
+    0 0 0 2px #a478e0,
+    0 2px 6px rgba(0,0,0,.55),
+    0 0 10px rgba(180,140,255,.25);
+}
+.mini-card.royal-mini .mc-royal-head{
+  background:linear-gradient(180deg,#7247b8,#3f1f70)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,220,255,.28),
+    inset 0 -1px 0 rgba(0,0,0,.3),
+    inset 0 0 0 1px rgba(80,30,120,.9);
+}
+.mini-card.royal-mini .mc-royal-pts{
+  background:radial-gradient(circle at 35% 30%,#fff4c7,#f1ce73 50%,#a0740c 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px #5a3a0a,
+    inset 0 0 0 2px #c88cff,
+    0 1px 2px rgba(0,0,0,.55)!important;
+  color:#4a2c00!important;
+}
+.mini-card.royal-mini .mc-royal-gem{
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255,255,255,.3), transparent 55%),
+    linear-gradient(180deg, #d7bef2, #8861b8)!important;
+  border-color:rgba(80,30,120,.5)!important;
+}
+.mini-card.royal-mini .mc-royal-medal{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:22px;height:22px;
+}
+.mini-card.royal-mini .mc-royal-bg{
+  position:absolute;inset:0;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,250,210,.95), rgba(255,210,100,.6) 35%, rgba(200,140,40,.95) 65%, rgba(130,80,10,.98) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(80,50,5,.85),
+    inset 0 0 0 2.5px rgba(255,220,120,.85),
+    inset 0 0 0 3.5px rgba(80,50,5,.7),
+    inset 0 2px 4px rgba(255,255,255,.5),
+    inset 0 -3px 5px rgba(0,0,0,.3),
+    0 1px 3px rgba(0,0,0,.55);
+}
+.mini-card.royal-mini .mc-royal-icon{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);
+  font-size:11px;line-height:1;color:#fff3c7;z-index:2;
+  text-shadow:0 0 2px rgba(255,180,60,.8),0 1px 0 #5a3a0a,0 1px 2px rgba(0,0,0,.5);
+}
+.mini-card.royal-mini .mc-royal-foot{
+  background:linear-gradient(180deg,#e0ccf5,#b89adf)!important;
+  border-color:rgba(70,30,110,.6)!important;
+}
+.mini-card.royal-mini .mc-royal-name{
+  font-size:5.5px;font-weight:700;color:#3a1c5f;
+  line-height:1;text-shadow:0 1px 0 rgba(255,255,255,.4);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;
+}
+
+/* hover 放大预览 */
 .mini-card:hover{
   transform:translateY(-10px) scale(2.4);
-  box-shadow:0 20px 40px rgba(0,0,0,.75),0 0 0 2px rgba(231,181,74,.7),0 0 28px rgba(231,181,74,.3);
+  box-shadow:
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 2px var(--card-frame-hi),
+    0 0 0 3px var(--card-frame-out),
+    0 20px 40px rgba(0,0,0,.75),
+    0 0 22px rgba(242,212,138,.4);
   z-index:50;
 }
 .mini-card.royal-mini:hover{
-  box-shadow:0 20px 40px rgba(0,0,0,.75),0 0 0 2px rgba(180,140,255,.7),0 0 28px rgba(180,140,255,.3);
+  box-shadow:
+    0 0 0 1px #3a1c5f,
+    0 0 0 2px #e4ccff,
+    0 0 0 3px #6a3ea8,
+    0 20px 40px rgba(0,0,0,.72),
+    0 0 32px rgba(200,170,255,.4);
 }
-/* 放大时让内部字号更清晰，并显示费用等细节 */
-.mini-card:hover .mc-points{font-size:20px}
-.mini-card:hover .mc-crown{font-size:15px}
-.mini-card:hover .mc-x2{font-size:12px}
-.mini-card:hover .mc-abil{font-size:14px;padding:2px 5px}
-.mini-card:hover .mc-band{height:22px}
 .mini-card:hover .mc-tip{display:flex}
-/* 放大时显示的详情提示（费用/能力说明） */
 .mini-card .mc-tip{
   display:none;position:absolute;left:50%;bottom:calc(100% + 8px);
   transform:translateX(-50%);
@@ -478,24 +1007,24 @@ body::before{
 }
 .mini-card .mc-tip .tip-cost{color:#f5d77a;font-weight:600}
 .mini-card .mc-tip .tip-abil{color:#6fe3a3;font-weight:600;margin-top:2px}
-.mini-card .mc-band{height:14px;flex-shrink:0;border-bottom:1px solid rgba(0,0,0,.15)}
-.mini-card .mc-body{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;gap:1px;background-color:#fbf6e9;
-}
-.mini-card .mc-body::before{content:"";position:absolute;inset:0;box-shadow:inset 0 0 8px rgba(0,0,0,.2);pointer-events:none}
-.mini-card .mc-points{font-family:var(--font-display);font-weight:800;color:#7a1d1d;font-size:11px;line-height:1}
-.mini-card .mc-points.mc-dot{color:#999;font-size:14px}
-.mini-card .mc-crown{font-size:8px;line-height:1}
-.mini-card .mc-x2{font-size:7px;color:#555;font-weight:700}
-.mini-card .mc-abil{font-size:9px;color:#3a2c10;background:#f5d77a;border-radius:2px;padding:0 2px;line-height:1}
-.mini-card.royal-mini{background:linear-gradient(160deg,#3a2c5a,#211836);border-color:#6a5a9a;color:#e9e1ff}
-.mini-card.royal-mini .mc-band{background:linear-gradient(180deg,#6a5a9a,#4a3a7a)}
-.mini-card.royal-mini .mc-points{color:#ffd56a}
 .mini-card .mc-back{background:repeating-linear-gradient(135deg,#2a3a5a,#2a3a5a 4px,#22304d 4px,#22304d 8px)}
-.mini-card.affordable{box-shadow:0 0 0 2px #6fe3a3,0 2px 6px rgba(0,0,0,.4);animation:affordGlow 2s ease-in-out infinite}
+.mini-card.affordable{
+  box-shadow:
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 2px var(--card-frame-in),
+    0 0 0 3.5px #6fe3a3,
+    0 2px 6px rgba(0,0,0,.4);
+  animation:affordGlow 2s ease-in-out infinite;
+}
 .reserved-card{cursor:pointer}
-.reserved-card:hover{outline:2px solid var(--gold)}
+.reserved-card:hover{
+  /* 用外层affordable等状态控制，这里不额外重写阴影以避免冲突 */
+  box-shadow:
+    0 0 0 1px var(--card-frame-out),
+    0 0 0 2px var(--card-frame-hi),
+    0 0 0 3.5px var(--gold),
+    0 2px 6px rgba(0,0,0,.4)!important;
+}
 .priv-badge{
   display:inline-flex;align-items:center;gap:4px;
   background:#3a2c10;border:1px solid var(--gold);color:#f5d77a;
@@ -513,7 +1042,7 @@ body::before{
   border-top:1px solid var(--line);
   backdrop-filter:blur(8px);
 }
-.message{font-size:13px;opacity:.9;flex:1;transition:opacity .3s}
+.message{font-family:var(--font-serif);font-size:14px;opacity:.9;flex:1;transition:opacity .3s;letter-spacing:.2px}
 .message b{color:var(--gold)}
 .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 
@@ -529,7 +1058,7 @@ body::before{
   letter-spacing:3px;opacity:.6;border-bottom:1px solid var(--line);
   text-transform:uppercase;
 }
-#log{padding:10px 14px;font-size:12px;line-height:1.6;overflow:auto;flex:1}
+#log{padding:10px 14px;font-family:var(--font-serif);font-size:13px;line-height:1.65;overflow:auto;flex:1}
 #log .l{
   padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.04);
   animation:logFade .3s ease-out;
@@ -557,7 +1086,7 @@ body::before{
 }
 @keyframes modalCardIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal-card h2{margin:0 0 10px;color:var(--gold);font-family:var(--font-display);font-size:22px;letter-spacing:1px}
-.modal-card p{font-size:13px;line-height:1.7;opacity:.9}
+.modal-card p{font-family:var(--font-serif);font-size:14px;line-height:1.75;opacity:.9}
 .modal-card .opts{display:flex;flex-direction:column;gap:10px;margin-top:18px}
 .modal-card .opts .btn{text-align:left;padding:14px 16px}
 .modal-card .win-icons{font-size:56px;text-align:center;margin:10px 0;animation:winBounce 1s var(--ease) infinite}
@@ -583,7 +1112,8 @@ body::before{
   .cell{width:54px;height:54px}
   .token{width:44px;height:44px}
   #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{width:92px;height:128px}
-  .p-info .p-name{font-size:14px}
+  .p-info .p-name{font-size:15px}
+  .p-stat{font-size:13px}
 }
 
 /* ============================================================
@@ -598,22 +1128,29 @@ body::before{
   #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{width:80px;height:112px}
   .pyramid-row{gap:8px}
   .royal-row{gap:8px}
-  .p-info .p-name{font-size:13px}
-  .p-info .p-stats{font-size:10px}
+  .p-info .p-name{font-size:14px}
+  .p-info .p-stats{font-size:11px}
+  .p-stat{font-size:11px}
+  .prog{font-size:10px}
   .mini-card{width:34px;height:44px}
   .token-pile .stack{width:22px;height:24px}
   .token-pile .stack .token{width:20px;height:20px}
 }
 
 /* ============================================================
-   响应式 — 手机 (<768px) 单列堆叠 + 日志抽屉
+   响应式 — 手机 (<768px) 严格单屏铺满，禁止滚动
    ============================================================ */
 @media (max-width:768px){
+  /* ===== 全局单屏约束 ===== */
+  html,body{height:100%;overflow:hidden;touch-action:manipulation}
+  html{height:100dvh;height:calc(100dvh - env(safe-area-inset-bottom))}
+  body{overflow:hidden}
+
   /* 日志切换按钮显示 */
-  .btn-log-toggle{display:inline-flex}
+  .btn-log-toggle{display:inline-flex;align-items:center}
   /* 日志面板转为右侧抽屉，默认隐藏 */
   #logPanel{
-    position:fixed;top:56px;right:0;bottom:0;width:280px;
+    position:fixed;top:46px;right:0;bottom:0;width:260px;
     grid-area:auto;z-index:100;
     transform:translateX(100%);
     transition:transform .3s var(--ease-out);
@@ -621,139 +1158,332 @@ body::before{
   }
   #logPanel.open{transform:translateX(0)}
 
-  /* #app 单列堆叠 */
+  /* #app 严格单屏：顶栏 46px + 舞台(stage) + 行动栏 */
   #app{
     grid-template-columns: 1fr;
-    grid-template-rows: 50px auto auto;
+    grid-template-rows: 46px 1fr auto;
     grid-template-areas:
       "top"
       "stage"
       "bar";
-    height:auto;
-    min-height:100vh;
+    height:100dvh;
+    height:calc(100dvh - env(safe-area-inset-bottom));
+    min-height:0;
   }
-  html,body{overflow:auto;height:auto}
-  body{overflow:auto}
 
-  /* 舞台改为单列：对手区 → 中央 → 玩家区 */
+  /* 舞台：对手区 86px | 中央(flex 1填满) | 玩家区 86px，严格禁止任何溢出滚动 */
   #stage{
     grid-template-columns:1fr;
-    grid-template-rows:auto auto auto;
-    overflow:visible;
+    grid-template-rows: 86px minmax(0,1fr) 86px;
+    overflow:hidden;
+    min-height:0;
   }
   #stage > #opponent,
-  #stage > #player{overflow:visible}
+  #stage > #player{
+    overflow:hidden;
+    min-height:0;
+  }
 
   /* 顶栏紧凑 */
-  #topbar{padding:0 12px;height:50px}
-  .brand .title{font-size:15px;letter-spacing:1px}
+  #topbar{padding:0 10px;height:46px;min-height:46px}
+  .brand .title{font-size:14px;letter-spacing:1px}
   .brand .subtitle{display:none}
-  .brand .logo{font-size:18px}
-  .btn{padding:6px 10px;font-size:12px}
-  .btn.sm{padding:5px 9px;font-size:11px}
+  .brand .logo{font-size:16px}
+  .top-actions{gap:4px}
+  .btn{padding:5px 9px;font-size:11px;border-radius:8px}
+  .btn.sm{padding:4px 8px;font-size:10px}
 
-  /* 中央区：单列堆叠（金字塔在上，棋盘在下） */
+  /* ===== 中央区：金字塔 + 棋盘 紧凑 ===== */
   #center{
-    padding:8px;gap:10px;
-    overflow:visible;
+    padding:6px 8px;gap:4px;
+    overflow:hidden;min-height:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
     border-left:none;border-right:none;
     border-top:1px solid var(--line2);
     border-bottom:1px solid var(--line2);
   }
-  #pyramidWrap{padding:6px 4px;gap:8px}
-  .pyramid-row{gap:6px}
-  .royal-row{gap:6px;min-height:auto}
-  /* 卡牌缩小：手机上一行5张需≤360px */
+  #pyramidWrap{
+    flex:0 0 auto;padding:2px 2px;gap:3px;
+    min-height:0;
+  }
+  .pyramid-row{gap:4px}
+  .royal-row{gap:4px;min-height:0;margin-top:2px}
+  /* 卡牌：紧凑小尺寸，保证4行(3卡等级行+王室行)总高~240px以内 · 新版绝对定位结构适配 */
   #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{
-    width:62px;height:86px;
+    width:44px;height:60px;border-radius:5px;
   }
-  .card-slot .card-head{height:26px}
-  .card-slot .card-points{font-size:13px;top:2px;left:4px}
-  .card-slot .card-crowns{font-size:10px;top:2px;right:4px}
-  .card-slot .card-bonus-gems{margin-top:10px;gap:2px}
-  .card-gem-icon{width:11px;height:11px}
-  .card-slot .card-ability-banner{font-size:8px;padding:2px 3px}
-  .card-slot .card-ability-banner .abil-icon{font-size:10px}
-  .card-slot .card-cost{padding:2px 3px;gap:2px}
-  .cost-gem{width:9px;height:9px}
-  .card-slot .royal-crest{font-size:14px}
-  .card-slot .royal-banner{font-size:8px}
-  .card-slot .royal-tag{font-size:7px}
-  .deck-back .deck-level{width:24px;height:24px;font-size:14px}
-  .deck-back .deck-count{font-size:10px}
-  /* 卡牌hover不要太大，避免溢出 */
-  .card-slot:hover{transform:translateY(-6px) scale(1.08);z-index:15}
-  .card-slot.selectable:hover{transform:translateY(-8px) scale(1.10)}
+  .card-slot::after{inset:2px;border-radius:3px;box-shadow:inset 0 0 12px rgba(70,40,5,.35),inset 0 0 1px rgba(70,40,5,.4)}
+  /* 色带 */
+  .card-slot .card-head{top:2px;left:2px;right:2px;height:15px;border-radius:2px 2px 5px 5px / 2px 2px 3px 3px}
+  .card-slot .card-head::before,.card-slot .card-head::after{font-size:6px}
+  /* 威望徽章 */
+  .card-slot .card-points{top:-4px;left:-4px;width:18px;height:18px;font-size:10px;line-height:16px;
+    box-shadow:inset 0 0 0 1px var(--card-gold-dark),inset 0 0 0 2px var(--card-gold),0 1px 3px rgba(0,0,0,.5)}
+  /* 皇冠 */
+  .card-slot .card-crowns{top:-2px;right:-1px;font-size:6.5px;gap:0.5px}
+  .card-slot .card-crowns > span:nth-child(1){transform:rotate(-5deg) translateY(.5px)}
+  .card-slot .card-crowns > span:nth-child(2){transform:translateY(-2px)}
+  .card-slot .card-crowns > span:nth-child(3){transform:rotate(5deg) translateY(.5px)}
+  /* 色带中央小宝石 */
+  .card-slot .card-bonus-gems{margin-top:0;gap:1px}
+  .card-gem-icon{width:8px;height:8px;border-width:0;
+    box-shadow:inset 0 -1.5px 3px rgba(0,0,0,.35),inset 0 1px 2px rgba(255,255,255,.45),0 1px 2px rgba(0,0,0,.35)}
+  .card-gem-icon::after{top:14%;left:22%;width:28%;height:22%}
+  /* 中央艺术区 */
+  .card-slot .card-art{top:19px;left:3px;right:3px;bottom:14px;border-radius:2px;
+    border-width:.5px;
+    box-shadow:inset 0 0 0 .5px rgba(255,255,255,.3),inset 0 2px 4px rgba(255,255,255,.2),inset 0 -3px 7px rgba(0,0,0,.25),0 .5px 0 rgba(255,255,255,.4)}
+  .card-slot .card-art::before{border-radius:2px 2px 4px 4px}
+  .card-slot .card-art::after{border-radius:2px 2px 4px 4px}
+  .card-art .big-gem{width:22px;height:22px}
+  .card-art .x2-badge{bottom:-2px;right:-1px;min-width:11px;height:11px;padding:0 3px;font-size:7px;line-height:10px;border-radius:5.5px;
+    box-shadow:inset 0 0 0 .5px var(--card-gold-dark),inset 0 0 0 1.2px var(--card-gold),0 1px 2px rgba(0,0,0,.45)}
+  /* 能力丝带 */
+  .card-slot .card-ability-banner{bottom:16px;font-size:5.5px;padding:1px 5px 1.5px;gap:2px;letter-spacing:0;border-radius:1.5px;
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.6),inset 0 -.5px 0 rgba(0,0,0,.25),0 .5px 1.5px rgba(0,0,0,.5)}
+  .card-slot .card-ability-banner::before,.card-slot .card-ability-banner::after{width:6px}
+  .card-slot .card-ability-banner .abil-icon{font-size:7px}
+  /* 底部费用 */
+  .card-slot .card-cost{left:2px;right:2px;bottom:2px;height:11px;padding:0 2px;gap:1px;border-radius:2px;
+    border-width:.5px;
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.6),inset 0 -.5px 0 rgba(0,0,0,.2),0 .5px 0 rgba(255,245,200,.4)}
+  .cost-gem{width:7px;height:7px;border-radius:50%;border-width:0;
+    box-shadow:inset 0 -1.5px 3px rgba(0,0,0,.35),inset 0 1px 2px rgba(255,255,255,.45),0 1px 2px rgba(0,0,0,.4),0 0 0 .5px rgba(0,0,0,.28)}
+  .cost-gem::after{top:14%;left:22%;width:28%;height:22%}
+  /* 王室卡专属 */
+  .card-slot.royal-card .royal-head{height:16px}
+  .card-slot .royal-crest{font-size:11px}
+  .card-slot.royal-card .royal-banner{bottom:18px}
+  .card-slot.royal-card .royal-tag{font-size:5.5px;font-weight:700;letter-spacing:.2px}
+  .card-slot.royal-card .royal-art .mc-royal-medal{width:32px;height:32px}
+  /* 牌堆 */
+  .deck-back .deck-level{width:20px;height:20px;font-size:11px;line-height:20px;
+    box-shadow:inset 0 0 0 1px rgba(70,45,10,.7),inset 0 0 0 2px rgba(242,212,138,.7),inset 0 1px 2px rgba(255,255,255,.7),inset 0 -1px 2px rgba(0,0,0,.3),0 1px 3px rgba(0,0,0,.55)}
+  .deck-back .deck-count{font-size:8px;letter-spacing:.5px}
+  /* 卡牌hover不要太大，避免溢出，且禁用大的translate缩放以免飞出视口 */
+  .card-slot:hover{transform:translateY(-2px) scale(1.05);z-index:15;filter:brightness(1.06) saturate(1.1)}
+  .card-slot.selectable:hover{transform:translateY(-3px) scale(1.08)}
+  .card-slot.affordable{animation:affordGlow 2s ease-in-out infinite}
 
-  /* 棋盘缩小 */
-  #boardWrap{gap:6px}
-  .board-label{font-size:10px;letter-spacing:2px}
+  /* ===== 棋盘：极度紧凑，flex 1 适应并占满剩余高度 ===== */
+  #boardWrap{
+    flex:1 1 auto;gap:3px;
+    min-height:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .board-label{font-size:8px;letter-spacing:1px;opacity:.6}
   #board{
-    grid-template-columns:repeat(5,44px);
-    grid-template-rows:repeat(5,44px);
-    gap:3px;padding:6px;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    grid-template-rows:repeat(5,minmax(0,1fr));
+    gap:2px;padding:3px;
+    width:auto;max-width:100%;aspect-ratio:1 / 1;
+    height:calc(100% - 26px);
+    max-height:calc(100% - 26px);
   }
-  .cell{width:44px;height:44px;border-radius:6px}
-  .token{width:36px;height:36px}
-  .token::after{width:10px;height:6px;top:4px;left:6px}
+  .cell{width:100%;height:100%;aspect-ratio:1 / 1;border-radius:4px}
+  .cell .token{width:78%;height:78%;position:absolute;top:11%;left:11%}
+  .cell .token::after{width:24%;height:18%;top:12%;left:14%}
 
-  /* 补给区紧凑 */
-  #supplies{gap:12px}
-  .supply-label{font-size:10px}
-  .supply-tokens{min-height:22px}
+  /* 补给区极致紧凑 */
+  #supplies{gap:8px;margin-top:0;display:flex;justify-content:center;align-items:center}
+  .supply-label{font-size:8px;opacity:.7}
+  .supply-tokens{min-height:0;height:14px;display:flex;gap:2px;align-items:center}
+  #supplyPrivilege .supply-tokens .token{width:12px;height:12px;position:static}
+  .bag-token{width:10px;height:10px}
 
-  /* 玩家区：手机端改为横向三列布局（信息/宝石/卡牌） */
+  /* ===== 玩家/对手区：四列横向布局（信息 宝石 已购卡牌 预留卡牌），86px 高 ===== */
   .player-area{
-    gap:8px;padding:10px 12px;
-    overflow:visible;
+    gap:4px;padding:5px 6px;
+    overflow:hidden;min-height:0;
+    display:grid;
+    grid-template-columns: minmax(0,5.2fr) minmax(0,3.3fr) minmax(0,1.75fr) minmax(0,1.75fr);
+    grid-template-rows: 1fr;
+    align-items:stretch;
   }
-  .p-info .p-name{font-size:15px}
-  .p-info .p-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px}
-  .p-info .p-stat{font-size:11px}
-  .win-prog{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px}
-  .prog{font-size:9px}
-  .token-pile .stack{width:20px;height:22px}
-  .token-pile .stack .token{width:18px;height:18px}
-  .token-pile{font-size:10px}
-  .mini-card{width:32px;height:42px}
-  .mini-card:hover{transform:translateY(-4px) scale(2.0);z-index:50}
+  /* 玩家信息区：左列 */
+  .player-area .p-info{
+    gap:2px;font-size:11px;overflow:hidden;min-width:0;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .p-info .p-name{font-size:13px;gap:4px;padding-bottom:1px;border-bottom:1px solid var(--line2);line-height:1.2}
+  .p-info .p-stats{grid-template-columns:1fr 1fr;gap:1px 4px;font-size:10px;line-height:1.3}
+  .p-stat{font-size:10px;gap:3px;line-height:1.3}
+  .p-stat b{font-size:10px}
+  .win-prog{grid-template-columns:1fr 1fr 1fr;gap:3px;margin-top:2px}
+  .prog{font-size:8px;line-height:1}
+  .prog .bar{height:3px;margin-top:1px}
+  .p-section-label{display:none}
+  .p-info .p-name .avatar{width:16px;height:16px;font-size:9px}
+  .priv-badge{padding:1px 4px;font-size:8px;border-radius:3px}
+  .p-info .p-stats:last-child{display:none} /* 底部bonus标签隐藏，节省空间 */
 
-  /* 行动栏紧凑 */
-  #actionbar{
-    padding:8px 10px;gap:8px;
-    flex-wrap:wrap;
-    position:sticky;bottom:0;
+  /* 宝石堆：第2列 */
+  .p-tokens{gap:2px 3px;justify-content:center;align-content:center;overflow:hidden}
+  .p-tokens > .p-section-label + *{margin-top:0}
+  .token-pile{gap:1px;font-size:8px}
+  .token-pile .stack{width:15px;height:17px}
+  .token-pile .stack .token{width:13px;height:13px;left:1px}
+  .token-pile:hover{transform:scale(1.06)}
+
+  /* 卡牌区（已购 + 预留）：第3/4列 紧凑 单行溢出裁切 */
+  .p-cards{gap:2px;overflow:hidden;min-height:0;display:flex;flex-direction:column;justify-content:flex-start}
+  .p-cards .card-line{gap:2px;overflow:hidden;display:flex;flex-wrap:nowrap;justify-content:flex-start;align-items:flex-start}
+  .mini-card{
+    width:18px;height:23px;border-radius:2px;font-size:4px;flex:0 0 auto;
+    box-shadow:
+      0 0 0 1px var(--card-frame-out),
+      0 0 0 1.5px var(--card-frame-in),
+      0 1px 3px rgba(0,0,0,.45);
   }
-  .message{font-size:12px;width:100%;order:1}
-  .actions{order:2;justify-content:flex-start;width:100%}
-  .actions .btn{flex:0 0 auto}
+  .mini-card:hover{transform:scale(2.4);z-index:60}
+  .mini-card::before{inset:1px;box-shadow:inset 0 0 6px rgba(70,40,5,.35)}
+  .mini-card .mc-head{top:1px;left:1px;right:1px;height:6px;border-radius:1px 1px 3px 3px / 1px 1px 2px 2px}
+  .mini-card .mc-head .mc-pts{top:-2px;left:-2px;width:8px;height:8px;font-size:5px;line-height:7px;
+    box-shadow:inset 0 0 0 .5px var(--card-gold-dark),inset 0 0 0 1.2px var(--card-gold),0 1px 1px rgba(0,0,0,.5)}
+  .mini-card .mc-head .mc-cr{top:-1px;right:0;font-size:4.5px}
+  .mini-card .mc-gem{top:8px;left:1.5px;right:1.5px;bottom:4.5px;border-radius:1px;
+    border-width:.5px;
+    box-shadow:inset 0 0 0 .5px rgba(255,255,255,.25),inset 0 -1.5px 3px rgba(0,0,0,.22),inset 0 1px 1.5px rgba(255,255,255,.2)}
+  .mini-card .mc-gem-inner{width:9px;height:9px}
+  .mini-card .mc-gem .mc-x2{bottom:-1.5px;right:-1px;min-width:6px;height:6px;padding:0 1.5px;font-size:4px;line-height:5px;border-radius:3px;
+    box-shadow:inset 0 0 0 .5px var(--card-gold-dark),inset 0 0 0 1px var(--card-gold),0 1px 1px rgba(0,0,0,.45)}
+  .mini-card .mc-gem .mc-abi{top:-1.5px;right:-1px;width:6px;height:6px;font-size:4.5px;line-height:6px;border-radius:50%}
+  .mini-card .mc-foot{left:1px;right:1px;bottom:1px;height:3.5px;border-radius:1px;border-width:.5px;gap:0.5px;padding:0 .5px;
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.55),inset 0 -.5px 0 rgba(0,0,0,.2)}
+  .mini-card .mc-cg{width:3px;height:3px;box-shadow:inset 0 -.5px 1px rgba(0,0,0,.35),inset 0 .5px 1px rgba(255,255,255,.4),0 0 0 .5px rgba(0,0,0,.3)}
+  .mini-card.royal-mini{box-shadow:0 0 0 1px #3a1c5f,0 0 0 1.5px #a478e0,0 1px 3px rgba(0,0,0,.5)}
+  .mini-card.royal-mini .mc-royal-medal{width:10px;height:10px}
+  .mini-card.royal-mini .mc-royal-icon{font-size:5px}
+  .mini-card.royal-mini .mc-royal-name{font-size:3px}
+  .mini-card.royal-mini .mc-royal-bg{box-shadow:
+    inset 0 0 0 .5px rgba(80,50,5,.85),
+    inset 0 0 0 1.3px rgba(255,220,120,.85),
+    inset 0 0 0 2px rgba(80,50,5,.7),
+    inset 0 1px 2px rgba(255,255,255,.5),
+    inset 0 -1.5px 2.5px rgba(0,0,0,.3),
+    0 .5px 1.5px rgba(0,0,0,.55)}
+  .reserved-card{width:18px;height:23px}
+  .p-cards .hint{font-size:7px;opacity:.4}
+
+  /* ===== 行动栏 ===== */
+  #actionbar{
+    padding:4px 8px;gap:4px;
+    flex-wrap:nowrap;
+    position:static;
+    align-items:center;
+    border-top-width:1px;
+    min-height:44px;
+  }
+  .message{font-size:10px;width:100%;order:2;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .actions{order:1;justify-content:flex-end;flex:0 0 auto;gap:4px;flex-wrap:nowrap;width:auto;max-width:60%}
+  .actions .btn{flex:0 0 auto;padding:4px 8px;font-size:10px}
 }
 
 /* ============================================================
-   响应式 — 小手机 (<420px) 进一步压缩
+   响应式 — 特小手机 (<420px) 更紧凑
    ============================================================ */
 @media (max-width:420px){
-  #topbar{padding:0 8px}
-  .brand .title{font-size:13px}
-  .top-actions{gap:4px}
-  .btn{padding:5px 8px;font-size:11px}
+  #topbar{padding:0 6px;height:42px}
+  .brand .title{font-size:12px}
+  .top-actions{gap:2px}
+  .btn{padding:4px 6px;font-size:10px;border-radius:6px}
+
+  #stage{grid-template-rows: 78px minmax(0,1fr) 78px}
+  #app{grid-template-rows: 42px 1fr auto;height:100dvh}
+
   #row3 .card-slot,#row2 .card-slot,#row1 .card-slot,.royal-row .card-slot{
-    width:54px;height:75px;
+    width:38px;height:52px;border-radius:4px;
   }
-  .card-slot .card-head{height:22px}
-  .card-slot .card-points{font-size:11px}
-  .card-slot .card-bonus-gems{margin-top:8px}
-  .card-gem-icon{width:9px;height:9px}
-  .card-slot .card-ability-banner{font-size:7px;padding:1px 2px}
-  #board{
-    grid-template-columns:repeat(5,38px);
-    grid-template-rows:repeat(5,38px);
-  }
-  .cell{width:38px;height:38px}
-  .token{width:30px;height:30px}
-  .token::after{width:8px;height:5px;top:3px;left:5px}
-  #logPanel{width:240px}
-  .mini-card{width:28px;height:38px}
+  .card-slot::after{inset:1.5px;border-radius:2.5px;box-shadow:inset 0 0 10px rgba(70,40,5,.35),inset 0 0 1px rgba(70,40,5,.4)}
+  /* 色带 */
+  .card-slot .card-head{top:1.5px;left:1.5px;right:1.5px;height:13px;border-radius:1.5px 1.5px 4px 4px / 1.5px 1.5px 2.5px 2.5px}
+  .card-slot .card-head::before,.card-slot .card-head::after{font-size:5px}
+  /* 威望徽章 */
+  .card-slot .card-points{top:-3px;left:-3px;width:15px;height:15px;font-size:8.5px;line-height:13px;
+    box-shadow:inset 0 0 0 .8px var(--card-gold-dark),inset 0 0 0 1.6px var(--card-gold),0 1px 2.5px rgba(0,0,0,.5)}
+  /* 皇冠 */
+  .card-slot .card-crowns{top:-1.5px;right:0;font-size:5.5px;gap:0.3px}
+  /* 色带中央小宝石 */
+  .card-slot .card-bonus-gems{margin-top:1px;gap:1px}
+  .card-gem-icon{width:7px;height:7px;border-width:0;
+    box-shadow:inset 0 -1.2px 2.5px rgba(0,0,0,.35),inset 0 .8px 1.6px rgba(255,255,255,.45),0 .8px 1.6px rgba(0,0,0,.35)}
+  /* 中央艺术区 */
+  .card-slot .card-art{top:16px;left:2px;right:2px;bottom:11px;border-radius:1.5px;
+    border-width:.5px;
+    box-shadow:inset 0 0 0 .5px rgba(255,255,255,.28),inset 0 1.5px 3px rgba(255,255,255,.2),inset 0 -2px 5px rgba(0,0,0,.25),0 .5px 0 rgba(255,255,255,.4)}
+  .card-slot .card-art::before{border-radius:1.5px 1.5px 3px 3px}
+  .card-slot .card-art::after{border-radius:1.5px 1.5px 3px 3px}
+  .card-art .big-gem{width:19px;height:19px}
+  .card-art .x2-badge{bottom:-2px;right:-1px;min-width:9px;height:9px;padding:0 2px;font-size:6px;line-height:8px;border-radius:4.5px;
+    box-shadow:inset 0 0 0 .4px var(--card-gold-dark),inset 0 0 0 1px var(--card-gold),0 1px 2px rgba(0,0,0,.45)}
+  /* 能力丝带：超小屏省略 ability-name 只保留图标 */
+  .card-slot .card-ability-banner{bottom:13px;font-size:0;padding:1px 3px;gap:1px;border-radius:1.5px;
+    box-shadow:inset 0 .5px 0 rgba(255,255,255,.6),inset 0 -.5px 0 rgba(0,0,0,.25),0 .5px 1.5px rgba(0,0,0,.5)}
+  .card-slot .card-ability-banner .abil-name{display:none}
+  .card-slot .card-ability-banner::before,.card-slot .card-ability-banner::after{width:4px}
+  .card-slot .card-ability-banner .abil-icon{font-size:6px}
+  /* 底部费用 */
+  .card-slot .card-cost{left:1.5px;right:1.5px;bottom:1.5px;height:9px;padding:0 1.5px;gap:.8px;border-radius:1.5px;
+    border-width:.5px;
+    box-shadow:inset 0 .4px 0 rgba(255,255,255,.6),inset 0 -.4px 0 rgba(0,0,0,.2),0 .4px 0 rgba(255,245,200,.4)}
+  .cost-gem{width:6px;height:6px;border-radius:50%;border-width:0;
+    box-shadow:inset 0 -1.2px 2.5px rgba(0,0,0,.35),inset 0 .8px 1.6px rgba(255,255,255,.45),0 .8px 1.6px rgba(0,0,0,.4),0 0 0 .4px rgba(0,0,0,.28)}
+  /* 王室卡专属 */
+  .card-slot.royal-card .royal-head{height:13px}
+  .card-slot .royal-crest{font-size:9px}
+  .card-slot.royal-card .royal-tag{font-size:5px}
+  /* 牌堆 */
+  .deck-back .deck-level{width:16px;height:16px;font-size:9px;line-height:16px;
+    box-shadow:inset 0 0 0 .8px rgba(70,45,10,.7),inset 0 0 0 1.6px rgba(242,212,138,.7),inset 0 .8px 1.6px rgba(255,255,255,.7),inset 0 -.8px 1.6px rgba(0,0,0,.3),0 1px 2.5px rgba(0,0,0,.55)}
+  .deck-back .deck-count{font-size:7px}
+  .pyramid-row{gap:3px}
+  .royal-row{gap:3px}
+
+  .player-area{gap:3px;padding:3px 4px;grid-template-columns:minmax(0,5.4fr) minmax(0,3.3fr) minmax(0,1.65fr) minmax(0,1.65fr)}
+  .p-info .p-name{font-size:11px}
+  .p-info .p-stats{gap:1px 2px;font-size:9px}
+  .p-stat{font-size:9px}
+  .win-prog{gap:2px;margin-top:1px}
+  .prog{font-size:7px}
+  .token-pile .stack{width:13px;height:15px}
+  .token-pile .stack .token{width:11px;height:11px}
+  .token-pile{font-size:8px}
+  .mini-card{width:15px;height:19px;border-radius:1.5px;font-size:3.5px;
+    box-shadow:
+      0 0 0 1px var(--card-frame-out),
+      0 0 0 1.2px var(--card-frame-in),
+      0 1px 2px rgba(0,0,0,.45)}
+  .mini-card::before{inset:1px;box-shadow:inset 0 0 5px rgba(70,40,5,.35)}
+  .mini-card .mc-head{top:1px;left:1px;right:1px;height:5px;border-radius:1px 1px 2px 2px}
+  .mini-card .mc-head .mc-pts{top:-1.5px;left:-1.5px;width:6.5px;height:6.5px;font-size:4px;line-height:6px;
+    box-shadow:inset 0 0 0 .4px var(--card-gold-dark),inset 0 0 0 1px var(--card-gold),0 1px 1px rgba(0,0,0,.45)}
+  .mini-card .mc-head .mc-cr{top:-.5px;right:0;font-size:3.5px}
+  .mini-card .mc-gem{top:7px;left:1.2px;right:1.2px;bottom:3.8px;border-radius:1px;
+    border-width:.5px}
+  .mini-card .mc-gem-inner{width:7px;height:7px}
+  .mini-card .mc-gem .mc-x2{display:none} /* 超小屏：隐藏 x2 徽章减少噪点 */
+  .mini-card .mc-gem .mc-abi{display:none} /* 超小屏：隐藏能力小圆减少噪点 */
+  .mini-card .mc-foot{left:1px;right:1px;bottom:1px;height:3px;border-radius:1px;border-width:.5px;gap:.3px;padding:0 .3px}
+  .mini-card .mc-cg{width:2.5px;height:2.5px;
+    box-shadow:inset 0 -.4px .8px rgba(0,0,0,.35),inset 0 .4px .8px rgba(255,255,255,.4),0 0 0 .5px rgba(0,0,0,.3)}
+  .mini-card.royal-mini .mc-royal-medal{width:8px;height:8px}
+  .mini-card.royal-mini .mc-royal-icon{font-size:4px}
+  .mini-card.royal-mini .mc-royal-name{display:none} /* 超小屏：王室名省略，用颜色+王冠识别 */
+  .reserved-card{width:15px;height:19px}
+
+  .board-label{display:none}
+  #board{gap:1px;padding:2px;height:100%;max-height:100%}
+  .cell{border-radius:3px}
+
+  #supplies{gap:5px}
+  .supply-tokens{height:12px}
+  #supplyPrivilege .supply-tokens .token{width:10px;height:10px}
+  .supply-label{font-size:7px}
+
+  #logPanel{top:42px;width:240px}
+  #actionbar{padding:3px 6px;gap:3px;min-height:40px}
+  .message{font-size:9px}
+  .actions .btn{padding:3px 6px;font-size:9px}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -797,12 +1527,12 @@ body::before{
   50%{text-shadow:0 0 50px var(--gold-glow),0 0 100px rgba(231,181,74,.5),0 0 140px rgba(231,181,74,.2)}
 }
 .curtain-title{
-  font-family:var(--font-display);font-size:42px;font-weight:900;
-  letter-spacing:8px;color:#f5efe1;
+  font-family:var(--font-display);font-size:44px;font-weight:900;
+  letter-spacing:10px;color:#f5efe1;
   text-shadow:0 2px 12px rgba(0,0,0,.8);
 }
 .curtain-sub{
-  font-family:var(--font-display);font-size:13px;letter-spacing:6px;
+  font-family:var(--font-serif);font-size:14px;letter-spacing:8px;font-style:italic;
   color:var(--gold);opacity:.7;margin-top:6px;
 }
 

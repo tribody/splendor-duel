@@ -838,14 +838,10 @@ function onDeckClick(lvl){
 function cardSlotEl(c,lvl,i){
   const slot=document.createElement("div"); slot.className="card-slot";
   slot.dataset.lvl=lvl; slot.dataset.idx=i;
-  // 仅对"新发牌"应用入场动画，避免每次重渲染都闪烁
   const isNew = c && !_dealtCards.has(c.id);
   if(c) _dealtCards.add(c.id);
-  if(isNew){
-    slot.style.animationDelay = ((lvl-1)*0.08 + i*0.04) + "s";
-  } else {
-    slot.style.animation = "none";
-  }
+  if(isNew){ slot.style.animationDelay = ((lvl-1)*0.08 + i*0.04) + "s"; }
+  else { slot.style.animation = "none"; }
   if(!c){ slot.classList.add("empty"); return slot; }
   slot.dataset.cid=c.id;
   slot.classList.add("lvl"+lvl);
@@ -855,51 +851,54 @@ function cardSlotEl(c,lvl,i){
   }
   if(S.ui.purchaseTarget && S.ui.purchaseTarget.id===c.id) slot.classList.add("selected");
 
-  // 卡牌颜色（顶部色带）
   const bColor = c.bonus.color==="wild" ? "pearl" : c.bonus.color;
   slot.style.setProperty("--card-color", COLOR_HEX[bColor]);
 
-  // 顶部色带：points / crowns / bonus gem
+  // 1. 顶部色带：points + crowns + 中央小宝石
   const head=document.createElement("div"); head.className="card-head";
-  head.style.background = `linear-gradient(180deg, ${COLOR_HEX[bColor]}, ${shadeColor(COLOR_HEX[bColor], -25)})`;
-
-  // 左上：声望点数
+  head.style.background = `linear-gradient(180deg, ${COLOR_HEX[bColor]}, ${shadeColor(COLOR_HEX[bColor], -28)})`;
   if(c.points){
     const p=document.createElement("div"); p.className="card-points"; p.textContent=c.points;
     head.appendChild(p);
   }
-  // 右上：皇冠
   if(c.crowns){
     const k=document.createElement("div"); k.className="card-crowns";
     for(let ci=0;ci<c.crowns;ci++){ const cr=document.createElement("span"); cr.textContent="👑"; k.appendChild(cr); }
     head.appendChild(k);
   }
-  // 中部：奖励宝石图标
-  const bg=document.createElement("div"); bg.className="card-bonus-gems";
-  for(let bi=0;bi<(c.bonus.count||1);bi++){
-    const gem=document.createElement("div"); gem.className="card-gem-icon "+bColor;
-    bg.appendChild(gem);
-  }
-  head.appendChild(bg);
+  // 色带中央小宝石标记
+  const centerGem=document.createElement("div"); centerGem.className="card-bonus-gems";
+  const hg=document.createElement("div"); hg.className="card-gem-icon "+bColor;
+  centerGem.appendChild(hg); head.appendChild(centerGem);
   slot.appendChild(head);
 
-  // 能力横幅
+  // 2. 中央艺术区：大型立体刻面宝石 + ×2徽章（如需要）
+  const art=document.createElement("div"); art.className="card-art";
+  const bonusCount = c.bonus.count || 1;
+  // 双宝石堆叠（×2时，底层放一个略偏移的小号宝石）
+  for(let gi=bonusCount; gi>=1; gi--){
+    const gemWrap=document.createElement("div");
+    gemWrap.className="big-gem "+bColor+" gem-"+gi;
+    const gemInner=document.createElement("div");
+    gemInner.className="big-gem-inner";
+    gemWrap.appendChild(gemInner);
+    // 若 bonus.count>1 且只放一个宝石，额外加 x2 徽章在 art 右下角
+    art.appendChild(gemWrap);
+  }
+  if(bonusCount>1){
+    const x2=document.createElement("div"); x2.className="x2-badge"; x2.textContent="×"+bonusCount;
+    art.appendChild(x2);
+  }
+  slot.appendChild(art);
+
+  // 3. 能力丝带横幅
   if(c.ability){
     const ab=document.createElement("div"); ab.className="card-ability-banner";
     ab.innerHTML='<span class="abil-icon">'+ABIL_ICON[c.ability]+'</span><span class="abil-text">'+ABIL_NAME[c.ability]+'</span>';
     slot.appendChild(ab);
   }
 
-  // 中央装饰区（哆啦A梦角色背景 + 半透明色层）
-  const art=document.createElement("div"); art.className="card-art";
-  const imgUrl = charImgFor(bColor, c.id);
-  art.style.backgroundImage = `linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0.18) 100%), url("${imgUrl}")`;
-  art.style.backgroundSize = "cover, cover";
-  art.style.backgroundPosition = "center, center";
-  art.style.backgroundRepeat = "no-repeat";
-  slot.appendChild(art);
-
-  // 底部费用
+  // 4. 底部费用栏
   const cost=document.createElement("div"); cost.className="card-cost";
   for(const k in c.cost){
     for(let j=0;j<c.cost[k];j++){
@@ -930,57 +929,64 @@ function renderRoyal(){
     row.appendChild(royalCardEl(r,i));
   });
 }
-// 王室卡渲染（与金字塔卡同样式：112×156px，含人物背景与王冠）
+// 王室卡渲染：紫色贵宾卡 + 中央王冠图腾
 function royalCardEl(r, idx){
   const slot=document.createElement("div");
   slot.className="card-slot royal-card"+(r.taken?" taken":"");
   slot.dataset.royal=idx;
-  // 王室卡禁用重渲染时的发牌动画，避免闪烁（仅首次入场时淡入）
   if(_initialDealDone){ slot.style.animation = "none"; }
   else { slot.style.animationDelay = (0.26 + idx*0.05) + "s"; }
-  // 王室卡固定使用紫色调 + 哆啦A梦角色（按idx轮换，优先用静香/哆啦美等紫粉系）
-  const royalChars = ["assets/shizuka.jpg","assets/dorami.jpg","assets/doraemon.jpg","assets/dekisugi.jpg"];
-  const imgUrl = royalChars[idx % royalChars.length];
-  const bColor = "pearl"; // 顶部色带统一用珍珠色（紫粉系）
-  slot.style.setProperty("--card-color", COLOR_HEX[bColor]);
+  slot.style.setProperty("--card-color", "#b48ae0");
 
-  // 顶部色带：点数 / 王冠 / 王室宝石图标
+  // 顶部色带（紫金色）：points + crowns + 王冠徽记
   const head=document.createElement("div"); head.className="card-head royal-head";
-  head.style.background = `linear-gradient(180deg, #6a4a9a, #3a2c5a)`;
-  // 左上：声望点数
   if(r.points){
     const p=document.createElement("div"); p.className="card-points"; p.textContent=r.points;
     head.appendChild(p);
   }
-  // 右上：皇冠
   if(r.crowns){
     const k=document.createElement("div"); k.className="card-crowns";
     for(let ci=0;ci<r.crowns;ci++){ const cr=document.createElement("span"); cr.textContent="👑"; k.appendChild(cr); }
     head.appendChild(k);
   }
-  // 中部：王室徽记（用王冠图标代替奖励宝石）
-  const bg=document.createElement("div"); bg.className="card-bonus-gems royal-gem";
-  const crest=document.createElement("div"); crest.className="royal-crest"; crest.textContent="♛";
-  bg.appendChild(crest);
-  head.appendChild(bg);
+  const crest=document.createElement("div"); crest.className="card-bonus-gems royal-gem";
+  crest.innerHTML='<div class="royal-crest">♛</div>';
+  head.appendChild(crest);
   slot.appendChild(head);
 
-  // 能力横幅（卷轴特权）
-  const ab=document.createElement("div"); ab.className="card-ability-banner royal-banner";
-  ab.innerHTML='<span class="abil-icon">♔</span><span class="abil-text">'+r.name+(r.effect==="privilege"?"+卷轴":"")+'</span>';
-  slot.appendChild(ab);
-
-  // 中央装饰区：哆啦A梦角色背景
+  // 中央艺术区：王冠图腾 + 菱形底纹
   const art=document.createElement("div"); art.className="card-art royal-art";
-  art.style.backgroundImage = `linear-gradient(180deg, rgba(106,74,154,0.25) 0%, rgba(33,24,54,0.45) 100%), url("${imgUrl}")`;
-  art.style.backgroundSize = "cover, cover";
-  art.style.backgroundPosition = "center, center";
-  art.style.backgroundRepeat = "no-repeat";
+  // 中央大型金色王冠图腾（纯CSS雕刻）
+  const medallion=document.createElement("div");
+  medallion.style.cssText="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;";
+  medallion.innerHTML=`
+    <div style="position:absolute;inset:0;border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,250,210,.95), rgba(255,210,100,.6) 35%, rgba(200,140,40,.95) 65%, rgba(130,80,10,.98) 100%);
+      box-shadow:
+        inset 0 0 0 2px rgba(80,50,5,.85),
+        inset 0 0 0 5px rgba(255,220,120,.85),
+        inset 0 0 0 7px rgba(80,50,5,.7),
+        inset 0 4px 10px rgba(255,255,255,.5),
+        inset 0 -6px 14px rgba(0,0,0,.3),
+        0 4px 10px rgba(0,0,0,.55),
+        0 0 16px rgba(255,200,80,.35);">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);font-size:34px;line-height:1;color:#fff3c7;
+      text-shadow:0 0 4px rgba(255,180,60,.8),0 2px 0 #5a3a0a,0 3px 6px rgba(0,0,0,.55);z-index:2;">♛</div>
+    <div style="position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:3;
+      background:radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.45), transparent 40%);"></div>`;
+  art.appendChild(medallion);
   slot.appendChild(art);
 
-  // 底部说明条（替代费用）
+  // 能力丝带横幅（显示王室名+特权）
+  const ab=document.createElement("div"); ab.className="card-ability-banner royal-banner";
+  ab.innerHTML='<span class="abil-icon">♔</span><span class="abil-text">'+r.name+(r.effect==="privilege"?" · +卷轴":"")+'</span>';
+  slot.appendChild(ab);
+
+  // 底部：说明tag
   const foot=document.createElement("div"); foot.className="card-cost royal-cost";
-  foot.innerHTML='<span class="royal-tag">'+(r.effect==="privilege"?"特权：+1卷轴":"王室荣耀")+'</span>';
+  foot.innerHTML='<span class="royal-tag">'+(r.effect==="privilege"?"特权卡 · +1卷轴 · 领取即送":"王室荣耀卡")+'</span>';
   slot.appendChild(foot);
   return slot;
 }
@@ -1063,15 +1069,16 @@ function renderPlayerArea(host,p,idx){
     const line=document.createElement("div"); line.className="card-line";
     p.royal.forEach((r,i)=>{
       const m=document.createElement("div"); m.className="mini-card royal-mini";
-      const royalChars = ["assets/shizuka.jpg","assets/dorami.jpg","assets/doraemon.jpg","assets/dekisugi.jpg"];
-      const imgUrl = royalChars[i % royalChars.length];
-      let html='<div class="mc-band" style="background:linear-gradient(180deg,#6a4a9a,#3a2c5a)"></div>';
-      html+='<div class="mc-body" style="background-image:linear-gradient(180deg, rgba(106,74,154,0.35) 0%, rgba(33,24,54,0.55) 100%), url(\''+imgUrl+'\'); background-size:cover; background-position:center;">';
-      if(r.points) html+='<div class="mc-points" style="color:#ffd56a">'+r.points+'</div>';
-      else html+='<div class="mc-points mc-dot">♛</div>';
-      if(r.crowns) html+='<div class="mc-crown">👑'+r.crowns+'</div>';
+      // 王室小卡：紫金配色 + 王冠徽章
+      let html = '<div class="mc-head mc-royal-head" style="background:linear-gradient(180deg,#7247b8,#3f1f70)">';
+      if(r.points) html+='<span class="mc-pts mc-royal-pts">'+r.points+'</span>';
+      if(r.crowns) html+='<span class="mc-cr">👑'+r.crowns+'</span>';
       html+='</div>';
-      // 王室卡详情提示
+      html+='<div class="mc-gem mc-royal-gem"><div class="mc-royal-medal">' +
+        '<div class="mc-royal-bg"></div><span class="mc-royal-icon">♛</span>' +
+        '</div></div>';
+      html+='<div class="mc-foot mc-royal-foot"><span class="mc-royal-name">'+r.name.substr(0,6)+'</span></div>';
+      // tooltip
       const tipParts=['<div class="tip-cost">王室卡：'+r.name+'</div>'];
       if(r.points) tipParts.push('<div>声望 +'+r.points+'</div>');
       if(r.crowns) tipParts.push('<div>皇冠 +'+r.crowns+'</div>');
@@ -1109,27 +1116,39 @@ function renderPlayerArea(host,p,idx){
 function progBar(label,v,max){ const pct=Math.min(100,v/max*100); return '<div class="prog">'+label+' '+v+'/'+max+'<div class="bar"><i style="width:'+pct+'%"></i></div></div>'; }
 function colorDot(t){ return '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+COLOR_HEX[t]+';vertical-align:middle;box-shadow:inset 0 -2px 3px rgba(0,0,0,.4)"></span>'; }
 function miniCardEl(c, col, isReserved){
-  const m=document.createElement("div"); m.className="mini-card";
+  const m=document.createElement("div"); m.className="mini-card" + (isReserved?" reserved":'');
   const hex = col!=="none" ? COLOR_HEX[col] : "#999";
-  const imgCol = col!=="none" ? col : "gold";
-  const imgUrl = charImgFor(imgCol, c.id);
   m.style.setProperty("--mc", hex);
-  let html='<div class="mc-band" style="background:linear-gradient(180deg,'+hex+','+shadeColor(hex,-25)+')"></div>';
-  html+='<div class="mc-body" style="background-image:linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(251,246,233,0.75) 100%), url(\''+imgUrl+'\'); background-size:cover; background-position:center;">';
-  if(c.points) html+='<div class="mc-points">'+c.points+'</div>';
-  else html+='<div class="mc-points mc-dot">·</div>';
-  if(c.crowns) html+='<div class="mc-crown">👑'+c.crowns+'</div>';
-  if(c.bonus.count>1) html+='<div class="mc-x2">×2</div>';
-  if(c.ability) html+='<div class="mc-abil">'+ABIL_ICON[c.ability]+'</div>';
+
+  // 结构：外框(羊皮纸+金边框) → 顶部色带(1/3) → 中央大宝石刻面 → 底部费用(1/4)
+  let html = '';
+  // 色带
+  html += '<div class="mc-head" style="background:linear-gradient(180deg,'+hex+','+shadeColor(hex,-30)+')">';
+  if(c.points) html+='<span class="mc-pts">'+c.points+'</span>';
+  if(c.crowns) html+='<span class="mc-cr">👑'+c.crowns+'</span>';
   html+='</div>';
-  // hover 详情提示
+  // 中央大宝石刻面
+  html += '<div class="mc-gem"><div class="mc-gem-inner '+col+'"></div>';
+  if(c.bonus.count>1) html+='<span class="mc-x2">×'+c.bonus.count+'</span>';
+  if(c.ability) html+='<span class="mc-abi">'+ABIL_ICON[c.ability]+'</span>';
+  html += '</div>';
+  // 底部费用小宝石条
+  html += '<div class="mc-foot">';
+  const costGems = [];
+  for(const k in c.cost){ for(let j=0;j<c.cost[k];j++) costGems.push('<span class="mc-cg '+k+'"></span>'); }
+  // 费用太多时只取前6个
+  html += costGems.slice(0,6).join('');
+  html += '</div>';
+
+  // hover 详情提示（仍然保留，方便查看完整信息）
   const tipParts=[];
   const costArr=[]; for(const k in c.cost){ if(c.cost[k]>0) costArr.push(c.cost[k]+COLOR_NAME[k]); }
   if(costArr.length) tipParts.push('<div class="tip-cost">费用：'+costArr.join(' / ')+'</div>');
   if(c.bonus && c.bonus.count) tipParts.push('<div>奖励：'+(c.bonus.count>1?'双':'')+COLOR_NAME[c.bonus.color==="wild"?"white":c.bonus.color]+'</div>');
   if(c.ability) tipParts.push('<div class="tip-abil">能力：'+ABIL_NAME[c.ability]+'</div>');
-  if(isReserved) tipParts.push('<div class="tip-abil" style="color:#f5d77a">预留卡</div>');
+  if(isReserved) tipParts.push('<div class="tip-abil" style="color:#f5d77a">预留卡（点击可购买）</div>');
   if(tipParts.length) html+='<div class="mc-tip">'+tipParts.join('')+'</div>';
+
   m.innerHTML=html;
   return m;
 }
